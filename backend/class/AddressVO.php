@@ -7,6 +7,7 @@ class AddressVO
     private $complement;
     private $district;
     private $city;
+    private $state;
     private $zipcode;
 
     /**
@@ -167,6 +168,29 @@ class AddressVO
     public function setZipcode($zipcode)
     {
         $this->zipcode = $zipcode;
+        return $this;
+    }
+
+    /**
+     * Get the value of state
+     *
+     * @return  mixed
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set the value of state
+     *
+     * @param   mixed  $state  
+     *
+     * @return  self
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
         return $this;
     }
 }
