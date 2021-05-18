@@ -1,5 +1,6 @@
 <?php
-class UsuarioVO{
+
+class UsuarioVO {
     private $id_usuario;
     private $nome;
     private $sobrenome;
@@ -11,7 +12,8 @@ class UsuarioVO{
     private $genero;
     private $telefone;
     private $biografia;
-    private $id_empresario;
+    private $id_empresa;
     private $avatar;
     private $coordenadas;
+
 }
