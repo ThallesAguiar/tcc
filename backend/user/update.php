@@ -1,4 +1,5 @@
 <?php
+require_once("../middleware/auth.php");
 require_once('../global/headers.php');
 require_once("../config/autoLoad.php");
 require_once("../config/connection.php");
