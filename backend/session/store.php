@@ -1,7 +1,5 @@
 <?php
-require_once('../global/headers.php');
-require_once("../config/autoLoad.php");
-require_once("../config/connection.php");
+require_once('../global/headersNotAuthorizated.php');
 
 if ($array = json_decode(file_get_contents("php://input"), true)) :
     $userVO = new UserVO;
@@ -17,7 +15,7 @@ if ($array = json_decode(file_get_contents("php://input"), true)) :
         $array = [
             "user" => [
                 "id_user" => $userVO->getId_user(),
-                "nome" => $userVO->getName(),
+                "name" => $userVO->getName(),
                 "email" => $userVO->getEmail(),
                 "bio" => $userVO->getBio(),
                 "businessman" => $userVO->getBusinessman(),

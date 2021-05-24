@@ -1,7 +1,5 @@
 <?php
-require_once('../global/headers.php');
-require_once("../config/autoLoad.php");
-require_once("../config/connection.php");
+require_once("../global/headersNotAuthorizated.php");
 
 if($array = json_decode(file_get_contents("php://input"), true)):
     $userVO = new UserVO;

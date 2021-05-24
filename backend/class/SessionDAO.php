@@ -6,6 +6,9 @@ use Firebase\JWT\JWT;
 
 class SessionDAO
 {
+    /**
+     * Faz verificação em usuario através de email
+     */
     public function verifiryUser(UserVO $user, $conn)
     {
         $sql = "SELECT email,nome,biografia, senha, id_usuario, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario` WHERE `email` = '" . $user->getEmail() . "'";
@@ -37,7 +40,7 @@ class SessionDAO
     }
 
     /**
-     * Create a token for auth
+     * Cria um token de autentificação
      */
     public function createToken(UserVO $user)
     {
@@ -55,22 +58,18 @@ class SessionDAO
     }
 
     /**
-     * Verify if token is valid
+     * Verifica se o token é valido
      */
     public function verifyAuth($token)
     {
         $auth = new SessionVO;
 
-        if ($token) {
-            $decoded = JWT::decode($token, $auth->getSecret(), array('HS256'));
+        $decoded = JWT::decode($token, $auth->getSecret(), array('HS256'));
 
-            if ($decoded) {
-                return $decoded;
-            } else {
-                return false;
-            }
-        } else {
+        if (!$decoded) {
             return false;
         }
+
+        return $decoded;
     }
 }
