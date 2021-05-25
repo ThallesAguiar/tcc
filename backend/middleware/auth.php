@@ -1,6 +1,9 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json;charset=utf-8");
+header("Access-Control-Allow-Headers: *");
+// header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+// ob_clean();
 
 $token = isset($_SERVER["HTTP_AUTHORIZATION"]) ? $_SERVER["HTTP_AUTHORIZATION"] : null;
 

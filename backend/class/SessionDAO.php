@@ -17,7 +17,7 @@ class SessionDAO
         if (mysqli_num_rows($query) <= 0) {
             header('HTTP/1.1 400 user not exists!');
             echo json_encode(["error" => "User not exists!"]);
-            return false;
+            die();
         }
 
         $values = mysqli_fetch_assoc($query);
@@ -25,7 +25,7 @@ class SessionDAO
         if (md5($user->getPassword()) != $values['senha']) {
             header('HTTP/1.1 400 passwords not match!');
             echo json_encode(["error" => "Passwords not match!"]);
-            return false;
+            die();
         }
 
         $user->setName($values['nome']);

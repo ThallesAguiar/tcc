@@ -25,4 +25,5 @@ foreach ($users as $user) {
 }
 
 header('HTTP/1.1 200 OK');
-echo json_encode(["users" => $arrayAux],JSON_UNESCAPED_SLASHES);
+ob_clean();
+echo json_encode(["users" => $arrayAux], JSON_UNESCAPED_SLASHES);
