@@ -12,6 +12,13 @@ class UserDAO
         VALUES ('" . $userVO->getName() . "','" . $userVO->getLastname() . "','" . $userVO->getEmail() . "','" . $userVO->getBusinessman() . "','" . md5($userVO->getPassword()) . "','" . $userVO->getBirthday() . "','" . $userVO->getGender() . "','" . $userVO->getPhone() . "','" . $userVO->getBio() . "',ST_GeomFromText('POINT(" . $userVO->getCoordinates() . ")'))";
 
         mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
     }
 
     /**
@@ -25,9 +32,16 @@ class UserDAO
         $sql = "SELECT id_usuario, email, nome, sobrenome, data_nascimento, genero, telefone, avatar, biografia, `status`,  senha, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario`";
         $query = mysqli_query($conn, $sql);
 
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+
         if (mysqli_num_rows($query) <= 0) {
             header('HTTP/1.1 400 users not exists!');
-            echo json_encode(["error" => "Users not exists!"]);
+            echo json_encode(["error" => true, "msg" => "Users not exists!"]);
             die();
         }
 
@@ -58,12 +72,19 @@ class UserDAO
      */
     public static function getUserById($id, $conn)
     {
-        $sql = "SELECT id_usuario, email, nome, sobrenome, data_nascimento, genero, telefone, avatar, biografia, `status`,  senha, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario` WHERE id_usuario = $id";
+        $sql = "SELECT id_usuario, email, nome, sobrenome, data_nascimento, genero, telefone, avatar, biografia, `status`, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario` WHERE id_usuario = $id";
         $query = mysqli_query($conn, $sql);
 
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
         if (mysqli_num_rows($query) <= 0) {
-            echo json_encode(["error" => "User not exist!"]);
             header('HTTP/1.1 400 user not exist!');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => "User not exist!"]);
             die();
         }
 
@@ -75,15 +96,31 @@ class UserDAO
      */
     public static function updateUserById(UserVO $user, $conn)
     {
-        $sql = "UPDATE `usuario` SET `id_usuario`='[value-1]',`nome`='[value-2]',`sobrenome`='[value-3]',`email`='[value-4]',`empresario`='[value-5]',`status`='[value-6]',`senha`='[value-7]',`data_nascimento`='[value-8]',`genero`='[value-9]',`telefone`='[value-10]',`biografia`='[value-11]',`id_empresa`='[value-12]',`avatar`='[value-13]',`coordenadas`='[value-14]' WHERE id_usuario = ".$user->getId_user()."";
-        $query = mysqli_query($conn, $sql);
+        $sql = "UPDATE `usuario` SET `nome`='" . $user->getName() . "',`sobrenome`='" . $user->getLastname() . "',`email`='" . $user->getEmail() . "', `senha`='" . $user->getPassword() . "',`data_nascimento`='" . $user->getBirthday() . "',`genero`='" . $user->getGender() . "',`telefone`='" . $user->getPhone() . "',`biografia`='" . $user->getBio() . "',`avatar`='" . $user->getAvatar() . "' WHERE `id_usuario` = " . $user->getId_user() . "";
+        // var_dump($sql);
+        mysqli_query($conn, $sql);
 
-        if (mysqli_num_rows($query) <= 0) {
-            echo json_encode(["error" => "User not exist!"]);
-            header('HTTP/1.1 400 user not exist!');
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
             die();
         }
+    }
 
-        return mysqli_fetch_assoc($query);
+    /**
+     * Deleta um usuário por ID no Banco de dados.
+     */
+    public static function deleteUserById($id, $conn)
+    {
+        $sql = "DELETE FROM `usuario` WHERE `id_usuario` = $id";
+        mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
     }
 }

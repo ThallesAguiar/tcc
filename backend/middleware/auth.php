@@ -14,13 +14,15 @@ if ($token) {
 
     if (!$userVerified = $auth->verifyAuth($token)) {
         header('HTTP/1.1 400 token is not valid!');
-        echo json_encode(["error" => "Token is not valid!"]);
+        echo json_encode(["error" => true, "msg" => "Token is not valid!"]);
         die();
     }
 
     require_once("../config/connection.php");
+    require_once("../functions/index.php");
+    require_once("../global/variablesGlobals.php");
 } else {
     header('HTTP/1.1 400 no token');
-    echo json_encode(["error" => "You need a token to access this route."]);
+    echo json_encode(["error" => true, "msg" => "You need a token to access this route."]);
     die();
 }

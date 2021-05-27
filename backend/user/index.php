@@ -16,7 +16,6 @@ foreach ($users as $user) {
     $userArray['avatar'] = $user->getAvatar();
     $userArray['bio'] = $user->getBio();
     $userArray['status'] = $user->getStatus();
-    $userArray['password'] = $user->getPassword();
     $userArray['businessman'] = $user->getBusinessman();
     $userArray['id_enterprise'] = $user->getId_enterprise();
     $userArray['coordinates'] = $user->getCoordinates();
