@@ -1,31 +1,30 @@
 <?php
-// estes headers são obrigatórios
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=utf-8");
+require_once("../middleware/auth.php");
 
-require_once("../config/autoLoad.php");
-require_once("../config/connection.php");
+if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerified->id_enterprise != null) {
+    if ($array = json_decode(file_get_contents("php://input"), true)) :
 
-if($array = json_decode(file_get_contents("php://input"), true)):
-    $userVO = new UserVO;
-    $userDAO = new UserDAO;
-    
-    $userVO->setName($array['name']);
-    $userVO->setLastname($array['lastname']);
-    $userVO->setEmail($array['email']);
-    $userVO->setBusinessman($array['businessman']);
-    $userVO->setPassword($array['password']);
-    $userVO->setBirthday($array['birthday']);
-    $userVO->setGender($array['gender']);
-    $userVO->setPhone($array['phone']);
-    $userVO->setBio($array['bio']);
-    $userVO->setAvatar($array['avatar']);
-    $userVO->setCoordinates($array['lat']." ".$array['lng']);
+        $addressVO = new AddressVO;
+        $addressVO->setStreet($array['street']);
+        $addressVO->setNumber($array['number']);
+        $addressVO->setComplement($array['complement']);
+        $addressVO->setDistrict($array['district']);
+        $addressVO->setCity($array['city']);
+        $addressVO->setState($array['state']);
+        $addressVO->setCountry($array['country']);
+        $addressVO->setZipcode($array['zipcode']);
 
-    $userDAO->saveUser($userVO, $conn);
+        AddressDAO::saveAddress($addressVO, $conn, $userVerified->id_enterprise);
 
-    header('HTTP/1.1 200 created');
+        $address = AddressDAO::getAddressById($addressVO->getId_address(), $conn);
+
+        header('HTTP/1.1 200 created');
+        ob_clean();
+        echo json_encode($address);
+
+    endif;
+} else {
+    header('HTTP/1.1 400 negado');
     ob_clean();
-    echo json_encode(["success" => true, "msg"=>"User created"], JSON_UNESCAPED_SLASHES);
-
-endif;
+    echo json_encode(["erro" => true, "msg" => "Você não possuí uma empresa ativa na sua conta"]);
+}

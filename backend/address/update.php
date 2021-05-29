@@ -1,36 +1,48 @@
 <?php
 require_once("../middleware/auth.php");
 
-$id = $_GET['id'];
-
-if ($userVerified->id == $id) {
-    if ($array = json_decode(file_get_contents("php://input"), true)) :
-        $userVO = new UserVO;
-
-        $userVO->setId_user($userVerified->id);
-        $userVO->setName($array['name']);
-        $userVO->setLastname($array['lastname']);
-        $userVO->setEmail($array['email']);
-        $userVO->setPassword(md5($array['password']));
-        $userVO->setBirthday($array['birthday']);
-        $userVO->setGender($array['gender']);
-        $userVO->setPhone($array['phone']);
-        $userVO->setBio($array['bio']);
-        $userVO->setAvatar($array['avatar']);
-
-        UserDAO::updateUserById($userVO, $conn);
-
-        $user = UserDAO::getUserById($userVerified->id, $conn);
-
-        header('HTTP/1.1 200 updated');
-        ob_clean();
-        echo json_encode(["user" => $user], JSON_UNESCAPED_SLASHES);
-
-
-    endif;
-} else {
-    header('HTTP/1.1 400 ID invalid');
+if (!$userVerified->id_enterprise && $userVerified->businessman == false || 0) {
+    header('HTTP/1.1 400 businessman false');
     ob_clean();
-    echo json_encode(["error" => true, "msg" => "This is not your ID"]);
+    echo json_encode(["error" => true, "msg" => "You aren't a businessman"]);
     die();
 }
+
+$enterprise = EnterpriseDAO::getEnterpriseById($userVerified->id_enterprise, $conn);
+
+if (!$enterprise['id_endereco']) {
+    header('HTTP/1.1 400 address false');
+    ob_clean();
+    echo json_encode(["error" => true, "msg" => "You don't have an address"]);
+    die();
+}
+
+if ($array = json_decode(file_get_contents("php://input"), true)) :
+
+    if (!$array['id_address']) {
+        header('HTTP/1.1 400 ID null');
+        ob_clean();
+        echo json_encode(["error" => true, "msg" => "You need to pass a valid id"]);
+        die();
+    }
+    
+    $addressVO = new AddressVO;
+
+    $addressVO->setId_address($array['id_address']);
+    $addressVO->setStreet($array['street']);
+    $addressVO->setNumber($array['number']);
+    $addressVO->setComplement($array['complement']);
+    $addressVO->setDistrict($array['district']);
+    $addressVO->setCity($array['city']);
+    $addressVO->setState($array['state']);
+    $addressVO->setCountry($array['country']);
+    $addressVO->setZipcode($array['zipcode']);
+
+    AddressDAO::updateAddressById($addressVO, $conn);
+
+    $address = AddressDAO::getAddressById($addressVO->getId_address(), $conn);
+
+    header('HTTP/1.1 200 updated');
+    ob_clean();
+    echo json_encode($address);
+endif;

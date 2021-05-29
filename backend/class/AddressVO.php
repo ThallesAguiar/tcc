@@ -8,6 +8,7 @@ class AddressVO
     private $district;
     private $city;
     private $state;
+    private $country;
     private $zipcode;
 
     /**
@@ -191,6 +192,26 @@ class AddressVO
     public function setState($state)
     {
         $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * Get the value of country
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set the value of country
+     *
+     * @return  self
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
         return $this;
     }
 }
