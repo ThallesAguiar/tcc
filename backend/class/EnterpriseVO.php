@@ -8,6 +8,7 @@ class EnterpriseVO
     private $number_pj;
     private $number_pf;
     private $description;
+    private $ativo;
     private $type_company;
     private $id_address;
 
@@ -192,6 +193,26 @@ class EnterpriseVO
     public function setId_address($id_address)
     {
         $this->id_address = $id_address;
+        return $this;
+    }
+
+    /**
+     * Get the value of ativo
+     */
+    public function getAtivo()
+    {
+        return $this->ativo;
+    }
+
+    /**
+     * Set the value of ativo
+     *
+     * @return  self
+     */
+    public function setAtivo($ativo)
+    {
+        $this->ativo = $ativo;
+
         return $this;
     }
 }
