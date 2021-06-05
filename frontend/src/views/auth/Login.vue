@@ -1,222 +1,222 @@
 <template>
-<body>  
-  <div class="container">
-    <div class="row d-flex align-items-center justify-content-center">
-      <div class="col-sm-12">
-        <form v-if="isLogin" style="height:100vh">
-          <p
-            class="text-center text-white font-weight-bold"
-            style="font-size: 21px; text-shadow: 0px 0px 10px teal"
-          >
-            Mateship
-          </p>
-          <div class="form-group">
-            <input
-              type="email"
-              class="form-control"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
-              required
-              v-model="user.email"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              class="form-control"
-              placeholder="Password"
-              required
-              v-model="user.pass"
-            />
-          </div>
-          <button
-            type="button"
-            @click="login()"
-            class="btn btn-block btn-success"
-          >
-            {{ texts.toolbar }}
-          </button>
-          <div class="row">
-            <div class="col-12">
-              <small
-                id="noAccount"
-                class="form-text font-weight-bold text-white mt-5"
-                style="text-shadow: 1px 1px 2px black"
-                >Don't have an account?</small
-              >
+  <body>
+    <div class="container">
+      <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-sm-12">
+          <form v-if="isLogin" style="height:100vh">
+            <p
+              class="text-center text-white font-weight-bold"
+              style="font-size: 21px; text-shadow: 0px 0px 10px teal"
+            >
+              Mateship
+            </p>
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+                required
+                v-model="user.email"
+              />
             </div>
-            <div class="col-12">
-              <button
-                type="button"
-                @click="isLogin = !isLogin"
-                class="btn btn-primary"
-              >
-                {{ texts.button }}
-              </button>
+            <div class="form-group">
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Password"
+                required
+                v-model="user.pass"
+              />
             </div>
-          </div>
-        </form>
+            <button
+              type="button"
+              @click="login()"
+              class="btn btn-block btn-success"
+            >
+              {{ texts.toolbar }}
+            </button>
+            <div class="row">
+              <div class="col-12">
+                <small
+                  id="noAccount"
+                  class="form-text font-weight-bold text-white mt-5"
+                  style="text-shadow: 1px 1px 2px black"
+                  >Don't have an account?</small
+                >
+              </div>
+              <div class="col-12">
+                <button
+                  type="button"
+                  @click="isLogin = !isLogin"
+                  class="btn btn-primary"
+                >
+                  {{ texts.button }}
+                </button>
+              </div>
+            </div>
+          </form>
 
-        <form v-else>
-          <p
-            class="text-center text-white font-weight-bold"
-            style="font-size: 21px; text-shadow: 0px 0px 10px teal"
-          >
-            Mateship
-          </p>
-          <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Name"
-              required
-              v-model="user.name"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Lastname"
-              required
-              v-model="user.lastname"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="email"
-              class="form-control"
-              aria-describedby="emailHelp"
-              placeholder="Email"
-              required
-              v-model="user.email"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              class="form-control"
-              placeholder="Password"
-              required
-              v-model="user.pass"
-            />
-          </div>
-          <div class="row form-group">
-            <div class="col-12">
-              <label class="float-left"
-                >Phone {{ user.phone.dialCode }}{{ user.phone.DDD
-                }}{{ user.phone.number }}</label
-              >
+          <form v-else>
+            <p
+              class="text-center text-white font-weight-bold"
+              style="font-size: 21px; text-shadow: 0px 0px 10px teal"
+            >
+              Mateship
+            </p>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Name"
+                required
+                v-model="user.name"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Lastname"
+                required
+                v-model="user.lastname"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control"
+                aria-describedby="emailHelp"
+                placeholder="Email"
+                required
+                v-model="user.email"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Password"
+                required
+                v-model="user.pass"
+              />
+            </div>
+            <div class="row form-group">
+              <div class="col-12">
+                <label class="float-left"
+                  >Phone {{ user.phone.dialCode }}{{ user.phone.DDD
+                  }}{{ user.phone.number }}</label
+                >
+                <select
+                  class="custom-select my-1 mr-sm-2"
+                  v-model="user.phone.dialCode"
+                >
+                  <option disabled selected>Select your code country</option>
+                  <option
+                    v-for="country in countries"
+                    :key="country.name"
+                    :value="country.dialCode"
+                    >{{ country.dialCode }} - {{ country.name }}</option
+                  >
+                </select>
+              </div>
+              <div class="col-4">
+                <input
+                  type="tel"
+                  class="form-control"
+                  v-model="user.phone.DDD"
+                  max="4"
+                  min="1"
+                  placeholder="DDD"
+                />
+              </div>
+              <div class="col">
+                <input
+                  type="tel"
+                  class="form-control"
+                  v-model="user.phone.number"
+                  placeholder="Phone"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="birthday" class="float-left">Birthday</label>
+              <input
+                class="form-control"
+                type="date"
+                placeholder="dd/mm/yyyy"
+                v-model="user.birthday"
+                required
+              />
+              <small>Your birthday is important for us</small>
+            </div>
+            <div class="form-group">
               <select
                 class="custom-select my-1 mr-sm-2"
-                v-model="user.phone.dialCode"
+                required
+                v-model="user.gender"
               >
-                <option disabled selected>Select your code country</option>
-                <option
-                  v-for="country in countries"
-                  :key="country.name"
-                  :value="country.dialCode"
-                  >{{ country.dialCode }} - {{ country.name }}</option
-                >
+                <option disabled selected hidden>Gender</option>
+                <option value="F">Female</option>
+                <option value="M">Male</option>
               </select>
             </div>
-            <div class="col-4">
-              <input
-                type="tel"
+
+            <div class="form-group">
+              <textarea
                 class="form-control"
-                v-model="user.phone.DDD"
-                max="4"
-                min="1"
-                placeholder="DDD"
-              />
+                id="exampleFormControlTextarea1"
+                rows="3"
+                placeholder="Add a Bio"
+                v-model="user.bio"
+              ></textarea>
             </div>
-            <div class="col">
-              <input
-                type="tel"
-                class="form-control"
-                v-model="user.phone.number"
-                placeholder="Phone"
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="birthday" class="float-left">Birthday</label>
-            <input
-              class="form-control"
-              type="date"
-              placeholder="dd/mm/yyyy"
-              v-model="user.birthday"
-              required
-            />
-            <small>Your birthday is important for us</small>
-          </div>
-          <div class="form-group">
-            <select
-              class="custom-select my-1 mr-sm-2"
-              required
-              v-model="user.gender"
+            <div
+              class="row d-flex align-items-center justify-content-center"
+              style="background-color: rgba(0, 0, 0, 0.8); border-radius: 5px; margin-bottom:15px; padding:5px"
             >
-              <option disabled selected hidden>Gender</option>
-              <option value="F">Female</option>
-              <option value="M">Male</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <textarea
-              class="form-control"
-              id="exampleFormControlTextarea1"
-              rows="3"
-              placeholder="Add a Bio"
-              v-model="user.bio"
-            ></textarea>
-          </div>
-          <div
-            class="row d-flex align-items-center justify-content-center"
-            style="background-color: rgba(0, 0, 0, 0.8); border-radius: 5px; margin-bottom:15px; padding:5px"
-          >
-            <p style="color:white" class="font-weight-bold">
-              Are you businessman?&nbsp;&nbsp;&nbsp;
-            </p>
-            <label class="switch">
-              <input type="checkbox" v-model="user.businessman" />
-              <span class="slider round"></span>
-            </label>
-          </div>
-          <div
-            class="row d-flex align-items-center justify-content-center"
-            style="background-color: rgba(0, 0, 0, 0.8); border-radius: 5px; margin-bottom:15px; padding:5px"
-          >
-            <small
-              >Your coordinates <br />
-              lat: {{ user.coordinates.lat }}
-
-              lng: {{ user.coordinates.lng }}
-            </small>
-          </div>
-          <button
-            type="button"
-            @click="singin()"
-            class="btn btn-block btn-success"
-          >
-            {{ texts.toolbar }}
-          </button>
-          <div class="row">
-            <div class="col-12 p-5">
-              <button
-                type="button"
-                @click="isLogin = !isLogin"
-                class="btn btn-primary"
-              >
-                {{ texts.button }}
-              </button>
+              <p style="color:white" class="font-weight-bold">
+                Are you businessman?&nbsp;&nbsp;&nbsp;
+              </p>
+              <label class="switch">
+                <input type="checkbox" v-model="user.businessman" />
+                <span class="slider round"></span>
+              </label>
             </div>
-          </div>
-        </form>
+            <div
+              class="row d-flex align-items-center justify-content-center"
+              style="background-color: rgba(0, 0, 0, 0.8); border-radius: 5px; margin-bottom:15px; padding:5px"
+            >
+              <small
+                >Your coordinates <br />
+                lat: {{ user.coordinates.lat }}
+
+                lng: {{ user.coordinates.lng }}
+              </small>
+            </div>
+            <button
+              type="button"
+              @click="singin()"
+              class="btn btn-block btn-success"
+            >
+              {{ texts.toolbar }}
+            </button>
+            <div class="row">
+              <div class="col-12 p-5">
+                <button
+                  type="button"
+                  @click="isLogin = !isLogin"
+                  class="btn btn-primary"
+                >
+                  {{ texts.button }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 </template>
 
 <script>
@@ -286,8 +286,9 @@ export default {
           user.data.user.id_empresa == null
         ) {
           this.$router.push("/registerCompany");
+        } else {
+          this.$router.push("/feed");
         }
-        this.$router.push("/feed");
       } catch (error) {
         console.log(error);
       }
