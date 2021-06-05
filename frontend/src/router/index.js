@@ -8,12 +8,17 @@ const routes = [
     path: '/',
     name: 'Login',
     component: () => import('../views/auth/Login.vue')
-  }
-  // {
-  //   path: '/feed',
-  //   name: 'Feed',
-  //   component: () => import('../views/Feed.vue')
-  // },
+  },
+  {
+    path: '/registerCompany',
+    name: 'registerCompany',
+    component: () => import('../views/company/registerCompany.vue')
+  },
+  {
+    path: '/feed',
+    name: 'Feed',
+    component: () => import('../views/Feed.vue')
+  },
 ]
 
 const router = new VueRouter({

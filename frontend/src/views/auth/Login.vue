@@ -1,4 +1,5 @@
 <template>
+<body>  
   <div class="container">
     <div class="row d-flex align-items-center justify-content-center">
       <div class="col-sm-12">
@@ -13,19 +14,19 @@
             <input
               type="email"
               class="form-control"
-              id="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Enter email"
               required
+              v-model="user.email"
             />
           </div>
           <div class="form-group">
             <input
               type="password"
               class="form-control"
-              id="exampleInputPassword1"
               placeholder="Password"
               required
+              v-model="user.pass"
             />
           </div>
           <button
@@ -69,6 +70,7 @@
               class="form-control"
               placeholder="Name"
               required
+              v-model="user.name"
             />
           </div>
           <div class="form-group">
@@ -77,25 +79,26 @@
               class="form-control"
               placeholder="Lastname"
               required
+              v-model="user.lastname"
             />
           </div>
           <div class="form-group">
             <input
               type="email"
               class="form-control"
-              id="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Email"
               required
+              v-model="user.email"
             />
           </div>
           <div class="form-group">
             <input
               type="password"
               class="form-control"
-              id="exampleInputPassword1"
               placeholder="Password"
               required
+              v-model="user.pass"
             />
           </div>
           <div class="row form-group">
@@ -106,7 +109,6 @@
               >
               <select
                 class="custom-select my-1 mr-sm-2"
-                id="inlineFormCustomSelectPref"
                 v-model="user.phone.dialCode"
               >
                 <option disabled selected>Select your code country</option>
@@ -143,7 +145,7 @@
               class="form-control"
               type="date"
               placeholder="dd/mm/yyyy"
-              v-model="date"
+              v-model="user.birthday"
               required
             />
             <small>Your birthday is important for us</small>
@@ -151,8 +153,8 @@
           <div class="form-group">
             <select
               class="custom-select my-1 mr-sm-2"
-              id="inlineFormCustomSelectPref"
               required
+              v-model="user.gender"
             >
               <option disabled selected hidden>Gender</option>
               <option value="F">Female</option>
@@ -166,13 +168,16 @@
               id="exampleFormControlTextarea1"
               rows="3"
               placeholder="Add a Bio"
+              v-model="user.bio"
             ></textarea>
           </div>
           <div
             class="row d-flex align-items-center justify-content-center"
             style="background-color: rgba(0, 0, 0, 0.8); border-radius: 5px; margin-bottom:15px; padding:5px"
           >
-            <p style="color:white" class="font-weight-bold">Are you businessman?&nbsp;&nbsp;&nbsp;</p>
+            <p style="color:white" class="font-weight-bold">
+              Are you businessman?&nbsp;&nbsp;&nbsp;
+            </p>
             <label class="switch">
               <input type="checkbox" v-model="user.businessman" />
               <span class="slider round"></span>
@@ -211,15 +216,16 @@
       </div>
     </div>
   </div>
+</body>
 </template>
 
 <script>
 import countries from "../../data/countries.json";
+import axios from "axios";
 
 export default {
   data: () => ({
     isLogin: true,
-    date: new Date(),
     countries: countries,
     user: {
       name: "",
@@ -228,6 +234,7 @@ export default {
       pass: "",
       businessman: false,
       gender: "",
+      birthday: new Date(),
       phone: {
         dialCode: "",
         DDD: "",
@@ -248,7 +255,6 @@ export default {
     getCoordinates() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log(position.coords);
           const { latitude, longitude } = position.coords;
 
           this.user.coordinates.lat = latitude;
@@ -262,6 +268,58 @@ export default {
         }
       );
     },
+
+    async login() {
+      try {
+        const user = await axios.post(
+          "http://localhost/mateship/backend/session/store.php",
+          {
+            email: this.user.email,
+            password: this.user.pass,
+          }
+        );
+        console.log(user);
+        localStorage.setItem("token", user.data.token);
+        localStorage.setItem("user", JSON.stringify(user.data.user));
+        if (
+          user.data.user.empresario == 1 &&
+          user.data.user.id_empresa == null
+        ) {
+          this.$router.push("/registerCompany");
+        }
+        this.$router.push("/feed");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async singin() {
+      try {
+        const user = await axios.post(
+          "http://localhost/mateship/backend/user/store.php",
+          {
+            name: this.user.name,
+            lastname: this.user.lastname,
+            email: this.user.email,
+            businessman: this.user.businessman,
+            password: this.user.pass,
+            birthday: this.user.birthday,
+            gender: this.user.gender,
+            phone:
+              this.user.phone.dialCode +
+              this.user.phone.DDD +
+              this.user.phone.number,
+            bio: this.user.bio,
+            lat: this.user.coordinates.lat,
+            lng: this.user.coordinates.lng,
+            // avatar:https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png,
+          }
+        );
+        this.isLogin = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   computed: {
     texts() {
@@ -273,7 +331,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 select:invalid {
   color: gray;
 }
