@@ -193,7 +193,7 @@ export default {
           type_company: this.enterprise.type_company,
         });
 
-        localStorage.setItem("enterprise", JSON.stringify(enterprise));
+        localStorage.setItem("enterprise", JSON.stringify(enterprise.data));
 
         this.$router.push("/feed");
       } catch (error) {
