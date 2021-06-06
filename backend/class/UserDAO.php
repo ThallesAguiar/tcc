@@ -97,7 +97,22 @@ class UserDAO
     public static function updateUserById(UserVO $user, $conn)
     {
         $sql = "UPDATE `usuario` SET `nome`='" . $user->getName() . "',`sobrenome`='" . $user->getLastname() . "',`email`='" . $user->getEmail() . "', `senha`='" . $user->getPassword() . "',`data_nascimento`='" . $user->getBirthday() . "',`genero`='" . $user->getGender() . "',`telefone`='" . $user->getPhone() . "',`biografia`='" . $user->getBio() . "',`avatar`='" . $user->getAvatar() . "' WHERE `id_usuario` = " . $user->getId_user() . "";
-        // var_dump($sql);
+        mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+    }
+
+    /**
+     * Esta função é caso o usuario na hora do cadastro não queira ser empreendedor.
+     */
+    public static function ImNotBusinessman($id, $conn)
+    {
+        $sql = "UPDATE `usuario` SET `empresario`= 0 WHERE `id_usuario` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -140,7 +155,8 @@ class UserDAO
     /**
      * Atualiza as coordenadas do usuário
      */
-    public static function updateCoordinatesUser(UserVO $user, $conn){
+    public static function updateCoordinatesUser(UserVO $user, $conn)
+    {
         $sql = "UPDATE `usuario` SET `coordenadas`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_usuario` = " . $user->getId_user() . "";
         mysqli_query($conn, $sql);
 

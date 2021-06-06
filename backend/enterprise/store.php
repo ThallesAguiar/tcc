@@ -1,5 +1,22 @@
 <?php
-require_once("../middleware/auth.php");
+// require_once("../middleware/auth.php");
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=utf-8");
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods:  GET, POST, PATCH, PUT, DELETE, OPTIONS");
+
+require_once("../config/autoLoad.php");
+require_once("../config/connection.php");
+
+$token = isset($_SERVER["HTTP_AUTHORIZATION"]) ? $_SERVER["HTTP_AUTHORIZATION"] : null;
+
+$auth = new SessionDAO;
+
+if (!$userVerified = $auth->verifyAuth($token)) {
+    header('HTTP/1.1 400 token is not valid!');
+    echo json_encode(["error" => true, "msg" => "Token is not valid!"]);
+    die();
+}
 
 if ($userVerified->id_enterprise != null) {
     EnterpriseDAO::reactivateCompany($userVerified->id_enterprise, $conn);
@@ -7,7 +24,7 @@ if ($userVerified->id_enterprise != null) {
     header('HTTP/1.1 200 reactivated');
     ob_clean();
     echo json_encode($enterprise);
-} else if ($userVerified->id && ($userVerified->businessman == false || 0) && $userVerified->id_enterprise == null) {
+} else if ($userVerified->id && $userVerified->id_enterprise == null) {
     if ($array = json_decode(file_get_contents("php://input"), true)) :
         $enterpriseVO = new EnterpriseVO;
         $enterpriseDAO = new EnterpriseDAO;
