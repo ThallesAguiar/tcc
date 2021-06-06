@@ -278,7 +278,6 @@ export default {
             password: this.user.pass,
           }
         );
-        console.log(user);
         localStorage.setItem("token", user.data.token);
         localStorage.setItem("user", JSON.stringify(user.data.user));
         if (
@@ -347,6 +346,7 @@ label,
 small {
   color: #fff;
 }
+
 body {
   background-image: url("../../assets/bg-login.jpg");
   background-repeat: no-repeat;

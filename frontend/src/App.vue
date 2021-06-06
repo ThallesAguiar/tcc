@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
     <transition name="slide" mode="out-in">
     <router-view />
     </transition>
@@ -13,19 +9,20 @@
 <script>
 import axios from 'axios';
 export default {
-  created() {
-    axios.interceptors.request.use(
-      async (config) => {
-        const userToken = await localStorage.getItem("token");
-        config.headers.Authorization = `${userToken}`;
-        console.log(config);
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-  },
+  // created() {
+  //   axios.interceptors.request.use(
+  //     async (config) => {
+  //       const token = await localStorage.getItem("token");
+  //       config.headers.Authorization = `${token}`;
+        
+  //       console.log(config);
+  //       return config;
+  //     },
+  //     (error) => {
+  //       return Promise.reject(error);
+  //     }
+  //   );
+  // },
 };
 </script>
 
@@ -36,18 +33,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
