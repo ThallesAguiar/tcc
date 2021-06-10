@@ -1,29 +1,25 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-4 mt-4">
-        <img v-if="user.genero == 'F'" src="../assets/chapeu-prenda.png" width="120" style="position: absolute; left:-10px; top:-30px; transform: rotate(340deg);"  alt="chapeu">
+      <div class="col-xs-4 mt-4">
         <img
           :src="user.avatar"
-          width="100"
-          height="100"
+          width="150"
+          height="150"
           alt="avatar"
-          style="border-radius:50%; box-shadow: 1px 1px 3px black;"
+          style="background-color: blue; border-radius:50%; box-shadow: 1px 1px 3px black;"
         />
-        <img v-if="user.genero == 'M'" src="../assets/lenco-gaucho.png" width="100" style="position: absolute; left:10px; top:65px; z-index: -1"  alt="lenco">
+        <img v-if="user.genero == 'F'" src="../assets/chapeu-prenda.png" width="130" style="position: relative; left:-55%; top:-50%; z-index: 0; transform: rotate(350deg);"  alt="chapeu">
+        <img v-if="user.genero == 'M'" src="../assets/chapeu-gaucho.png" width="110" style="position: relative; left:-55%; top:-50%; z-index: 0; transform: rotate(350deg);"  alt="chapeu">
+        <!-- <img v-if="user.genero == 'M'" src="../assets/lenco-gaucho.png" width="120" style="position: relative; left:-55%; top:65%; z-index: -1"  alt="lenco"> -->
       </div>
-      <div class="col-8 text-left">
-        <div class="mt-4 font-weight-bold h4">
-          {{ user.nome + user.sobrenome }}
+      <div class="col">
+        <div style="background-color: rgba(0,0,0,0.4)" class="mt-5 p-2 font-weight-bold text-white rounded">
+          <h2>{{ user.nome + user.sobrenome }}</h2>
+          <br>
+        <small>{{user.email}}</small>
         </div>
-        <small>{{user.biografia}}</small>
       </div>
-
-      <!-- <div class="col-12 mt-2">
-        <p>
-        {{user.biografia}}
-        </p>
-      </div> -->
 
       <div class="col-12 mt-3">
         <div class="p-3 rounded text-white" style="background-color: rgba(0,0,0,0.6)">
@@ -37,7 +33,9 @@
 
 <script>
 export default {
-  data: () => ({}),
+  data: () => ({
+    hat: true
+  }),
 
   computed: {
     user() {
