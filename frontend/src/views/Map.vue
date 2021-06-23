@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       accessToken:
-        "pk.eyJ1Ijoic29jaWFsbWF0ZSIsImEiOiJja2NmZHFiMGEwMWQ5MndsaWVzaGxjMHB6In0.Lp8pyQ2bmdw9rnSzkEtTdA",
+        "pk.eyJ1Ijoic29jaWFsbWF0ZSIsImEiOiJja3E5bGdpcHEwNXMzMnBzMTZpeTRrZDk5In0.0ru5SvtMtBqp8gMH8Zh3vQ",
       mapStyle: "mapbox://styles/mapbox/streets-v11",
       myCoordinates: JSON.parse(localStorage.getItem("coordinates")),
       // myCoordinates: [0, 0],
@@ -70,19 +70,19 @@ export default {
       // console.log(id);
       // console.log(this.myCoordinates);
       try {
-        const coordsCurrent = await api.put(`coordinates/show.php`, {
+        const coordsCurrent = await api.put(`coordinates/update.php`, {
           id_user: id,
           lat: this.myCoordinates[1],
           lng: this.myCoordinates[0],
         },{
           headers: {
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
             "Access-Control-Allow-Headers": "*",
             "Authorization": localStorage.getItem("token")
           }
         });
         console.log(coordsCurrent);
+        // localStorage.setItem("coordinates", coordsCurrent.data.coordinates);
       } catch (error) {}
     },
   },
