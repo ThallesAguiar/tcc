@@ -16,7 +16,7 @@
 
       <MglPopup anchor="bottom">
         <button type="button" class="btn btn-link" @click="visitProfile()">
-        {{ user.nome+' '+user.sobrenome }}
+        {{ nameComplete }}
         </button>
       </MglPopup> 
     </MglMarker>
@@ -112,6 +112,11 @@ export default {
         return JSON.parse(localStorage.getItem("enterprise"));
       else return false;
     },
+
+    nameComplete(){
+      const user = JSON.parse(localStorage.getItem("user"));
+      return user.nome+' '+user.sobrenome;
+    }
   },
 
   created() {
