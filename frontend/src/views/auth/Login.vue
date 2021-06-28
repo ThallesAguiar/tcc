@@ -272,7 +272,7 @@ export default {
     async login() {
       try {
         const user = await axios.post(
-          "http://localhost/mateship/backend/session/store.php",
+          "http://localhost/mateship/backend/controller/session/store.php",
           {
             email: this.user.email,
             password: this.user.pass,
@@ -296,7 +296,7 @@ export default {
     async singin() {
       try {
         const user = await axios.post(
-          "http://localhost/mateship/backend/user/store.php",
+          "http://localhost/mateship/backend/controller/user/store.php",
           {
             name: this.user.name,
             lastname: this.user.lastname,
