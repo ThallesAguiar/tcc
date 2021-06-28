@@ -4,8 +4,8 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Headers: *");
 
-require_once("../config/autoLoad.php");
-require_once("../config/connection.php");
+require_once("../../config/autoLoad.php");
+require_once("../../config/connection.php");
 
 if($array = json_decode(file_get_contents("php://input"), true)):
     $userVO = new UserVO;

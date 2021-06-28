@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: *");
 $token = isset($_SERVER["HTTP_AUTHORIZATION"]) ? $_SERVER["HTTP_AUTHORIZATION"] : null;
 
 if ($token) {
-    require_once("../config/autoLoad.php");
+    require_once("../../config/autoLoad.php");
 
     $auth = new SessionDAO;
 
@@ -18,9 +18,9 @@ if ($token) {
         die();
     }
 
-    require_once("../config/connection.php");
-    require_once("../functions/index.php");
-    require_once("../global/variablesGlobals.php");
+    require_once("../../config/connection.php");
+    require_once("../../functions/index.php");
+    require_once("../../global/variablesGlobals.php");
 } else {
     header('HTTP/1.1 400 no token');
     echo json_encode(["error" => true, "msg" => "You need a token to access this route."]);

@@ -4,8 +4,8 @@ header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods:  GET, POST, PATCH, PUT, DELETE, OPTIONS");
 
-require_once("../config/autoLoad.php");
-require_once("../config/connection.php");
+require_once("../../config/autoLoad.php");
+require_once("../../config/connection.php");
 
 $token = isset($_SERVER["HTTP_AUTHORIZATION"]) ? $_SERVER["HTTP_AUTHORIZATION"] : null;
 

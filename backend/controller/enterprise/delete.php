@@ -1,6 +1,6 @@
 <?php
 /**nesta nestre controller ele somente irá desativar a empresa */
-require_once("../middleware/auth.php");
+require_once("../../middleware/auth.php");
 
 $id = $_GET['id'];
 

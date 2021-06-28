@@ -1,5 +1,5 @@
 <?php
-require_once("../middleware/auth.php");
+require_once("../../middleware/auth.php");
 
 $users = UserDAO::getAllUsers($conn);
 

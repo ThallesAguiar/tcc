@@ -1,5 +1,5 @@
 <?php
-require_once("../middleware/auth.php");
+require_once("../../middleware/auth.php");
 
 if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerified->id_enterprise != null) {
     if ($array = json_decode(file_get_contents("php://input"), true)) :

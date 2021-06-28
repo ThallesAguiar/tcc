@@ -1,6 +1,6 @@
 <?php
 
-require_once('../global/variablesGlobals.php');
+require_once('../../global/variablesGlobals.php');
 
 class SessionVO
 {

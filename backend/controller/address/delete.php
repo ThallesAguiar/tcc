@@ -1,6 +1,6 @@
 <?php
 /**nesta nestre controller ele somente irá desativar a empresa */
-require_once("../middleware/auth.php");
+require_once("../../middleware/auth.php");
 
 if (!$userVerified->id_enterprise && $userVerified->businessman == false || 0) {
     header('HTTP/1.1 400 businessman false');
