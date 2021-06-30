@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 18-Maio-2021 às 06:38
+-- Tempo de geração: 01-Jul-2021 às 00:42
 -- Versão do servidor: 10.4.18-MariaDB
 -- versão do PHP: 8.0.3
 
@@ -20,128 +20,81 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `mateship`
 --
+CREATE DATABASE IF NOT EXISTS `mateship` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `mateship`;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `empresa`
+-- Estrutura da tabela `address`
 --
 
-CREATE TABLE `empresa` (
-  `id_empresa` int(11) NOT NULL,
-  `razao_social` int(11) NOT NULL,
-  `nome_empresa` int(11) NOT NULL,
-  `numero_PJ` varchar(50) DEFAULT NULL COMMENT 'numero do registro da empresa se for PJ',
-  `numero_PF` varchar(50) DEFAULT NULL COMMENT 'numero do CPF caso não for PJ',
-  `descricao` varchar(250) DEFAULT NULL,
-  `tipo_empreendimento` varchar(100) NOT NULL,
-  `id_endereco` int(11) NOT NULL
+CREATE TABLE IF NOT EXISTS `address` (
+  `id_address` int(11) NOT NULL AUTO_INCREMENT,
+  `street` varchar(200) NOT NULL,
+  `number` varchar(10) NOT NULL,
+  `complement` varchar(100) DEFAULT NULL,
+  `district` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  `country` varchar(50) NOT NULL,
+  `zipcode` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `endereco`
+-- Estrutura da tabela `enterprise`
 --
 
-CREATE TABLE `endereco` (
-  `id_endereco` int(11) NOT NULL,
-  `logradouro` varchar(200) NOT NULL,
-  `numero` varchar(10) NOT NULL,
-  `complemento` varchar(100) DEFAULT NULL,
-  `bairro` varchar(100) NOT NULL,
-  `cidade` varchar(100) NOT NULL,
-  `estado` varchar(100) NOT NULL,
-  `zipcode` varchar(50) NOT NULL
+CREATE TABLE IF NOT EXISTS `enterprise` (
+  `id_enterprise` int(11) NOT NULL AUTO_INCREMENT,
+  `corporate_name` varchar(200) NOT NULL,
+  `fantasy_name` varchar(200) DEFAULT NULL,
+  `numbering_company` varchar(50) DEFAULT NULL COMMENT 'numero do registro da empresa se for PJ',
+  `numbering_personal` varchar(50) DEFAULT NULL COMMENT 'numero do CPF caso não for PJ',
+  `description` varchar(250) DEFAULT NULL,
+  `enterprise_type` varchar(100) NOT NULL,
+  `id_address` int(11) NOT NULL,
+  `active` tinyint(4) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id_enterprise`),
+  UNIQUE KEY `numero_PJ` (`numbering_company`),
+  UNIQUE KEY `numero_PF` (`numbering_personal`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuario`
+-- Estrutura da tabela `user`
 --
 
-CREATE TABLE `usuario` (
-  `id_usuario` int(11) NOT NULL,
-  `nome` varchar(50) NOT NULL,
-  `sobrenome` varchar(100) NOT NULL,
+CREATE TABLE IF NOT EXISTS `user` (
+  `id_user` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `lastname` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `empresario` tinyint(1) DEFAULT 0,
+  `businessman` tinyint(1) DEFAULT 0,
   `status` varchar(50) NOT NULL DEFAULT 'ATIVO',
-  `senha` varchar(200) NOT NULL,
-  `data_nascimento` date NOT NULL,
-  `genero` enum('M','F') NOT NULL,
-  `telefone` varchar(50) DEFAULT NULL,
-  `biografia` varchar(500) NOT NULL,
-  `id_empresa` int(11) DEFAULT NULL,
+  `password` varchar(200) NOT NULL,
+  `birthday` date NOT NULL,
+  `gender` enum('M','F') NOT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `bio` text NOT NULL,
+  `id_enterprise` int(11) DEFAULT NULL,
   `avatar` varchar(500) DEFAULT 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png',
-  `coordenadas` point NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `coordinates` point NOT NULL,
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `email UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
--- Índices para tabelas despejadas
+-- Extraindo dados da tabela `user`
 --
 
---
--- Índices para tabela `empresa`
---
-ALTER TABLE `empresa`
-  ADD PRIMARY KEY (`id_empresa`),
-  ADD UNIQUE KEY `numero_PJ` (`numero_PJ`),
-  ADD UNIQUE KEY `numero_PF` (`numero_PF`),
-  ADD KEY `fk_endereco` (`id_endereco`);
-
---
--- Índices para tabela `endereco`
---
-ALTER TABLE `endereco`
-  ADD PRIMARY KEY (`id_endereco`);
-
---
--- Índices para tabela `usuario`
---
-ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `email UNIQUE` (`email`),
-  ADD KEY `fk_empresa` (`id_empresa`);
-
---
--- AUTO_INCREMENT de tabelas despejadas
---
-
---
--- AUTO_INCREMENT de tabela `empresa`
---
-ALTER TABLE `empresa`
-  MODIFY `id_empresa` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `endereco`
---
-ALTER TABLE `endereco`
-  MODIFY `id_endereco` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `usuario`
---
-ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Restrições para despejos de tabelas
---
-
---
--- Limitadores para a tabela `empresa`
---
-ALTER TABLE `empresa`
-  ADD CONSTRAINT `fk_endereco` FOREIGN KEY (`id_endereco`) REFERENCES `endereco` (`id_endereco`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Limitadores para a tabela `usuario`
---
-ALTER TABLE `usuario`
-  ADD CONSTRAINT `fk_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+INSERT INTO `user` (`id_user`, `name`, `lastname`, `email`, `businessman`, `status`, `password`, `birthday`, `gender`, `phone`, `bio`, `id_enterprise`, `avatar`, `coordinates`) VALUES
+(1, 'Thalles', 'Aguiar', 'thalles@email.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png', 0x0000000001010000003d80457efd103bc01f1329cde67148c0),
+(4, 'Thalles', 'Stark', 'stark@email.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png', 0x000000000101000000662fdb4e5b6f48c046990d32c90c3bc0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
