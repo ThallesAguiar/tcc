@@ -26,10 +26,10 @@ if ($array = json_decode(file_get_contents("php://input"), true)) :
         echo json_encode(["success" => true, "msg" => "You aren't longer an entrepreneur"]);
         die();
     }
-    if ($userVerified->id == $id) {
+    if ($userVerified->id == $array['id_user']) {
         $userVO = new UserVO;
 
-        $userVO->setId_user($userVerified->id);
+        $userVO->setId_user($array['id_user']);
         $userVO->setName($array['name']);
         $userVO->setLastname($array['lastname']);
         $userVO->setEmail($array['email']);
@@ -42,7 +42,7 @@ if ($array = json_decode(file_get_contents("php://input"), true)) :
 
         UserDAO::updateUserById($userVO, $conn);
 
-        $user = UserDAO::getUserById($userVerified->id, $conn);
+        $user = UserDAO::getUserById($array['id_user'], $conn);
 
         header('HTTP/1.1 200 updated');
         ob_clean();
