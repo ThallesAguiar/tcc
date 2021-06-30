@@ -8,7 +8,7 @@ class UserDAO
      */
     public function saveUser(UserVO $userVO, $conn)
     {
-        $sql = "INSERT INTO `usuario`(`nome`, `sobrenome`, `email`, `empresario`, `senha`, `data_nascimento`, `genero`, `telefone`, `biografia`, `coordenadas`) 
+        $sql = "INSERT INTO `user`(`name`, `lastname`, `email`, `businessman`, `password`, `birthday`, `gender`, `phone`, `bio`, `coordinates`) 
         VALUES ('" . $userVO->getName() . "','" . $userVO->getLastname() . "','" . $userVO->getEmail() . "','" . $userVO->getBusinessman() . "','" . md5($userVO->getPassword()) . "','" . $userVO->getBirthday() . "','" . $userVO->getGender() . "','" . $userVO->getPhone() . "','" . $userVO->getBio() . "',ST_GeomFromText('POINT(" . $userVO->getCoordinates() . ")'))";
 
         mysqli_query($conn, $sql);
@@ -29,7 +29,7 @@ class UserDAO
         $user = new UserVO;
         $usersArray = array();
 
-        $sql = "SELECT id_usuario, email, nome, sobrenome, data_nascimento, genero, telefone, avatar, biografia, `status`,  senha, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario`";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`,  password, businessman, id_enterprise, ST_AsText(coordinates) coordinates  FROM `user`";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -46,20 +46,20 @@ class UserDAO
         }
 
         while ($users = mysqli_fetch_array($query, true)) {
-            $user->setId_user(stripslashes($users['id_usuario']));
+            $user->setId_user(stripslashes($users['id_user']));
             $user->setEmail(stripslashes($users['email']));
-            $user->setName(stripslashes($users['nome']));
-            $user->setLastname(stripslashes($users['sobrenome']));
-            $user->setBirthday(stripslashes($users['data_nascimento']));
-            $user->setGender(stripslashes($users['genero']));
-            $user->setPhone(stripslashes($users['telefone']));
+            $user->setName(stripslashes($users['name']));
+            $user->setLastname(stripslashes($users['lastname']));
+            $user->setBirthday(stripslashes($users['birthday']));
+            $user->setGender(stripslashes($users['gender']));
+            $user->setPhone(stripslashes($users['phone']));
             $user->setAvatar(stripslashes($users['avatar']));
-            $user->setBio(stripslashes($users['biografia']));
+            $user->setBio(stripslashes($users['bio']));
             $user->setStatus(stripslashes($users['status']));
-            $user->setPassword(stripslashes($users['senha']));
-            $user->setBusinessman(stripslashes($users['empresario']));
-            $user->setId_enterprise(stripslashes($users['id_empresa']));
-            $user->setCoordinates(stripslashes($users['coordenadas']));
+            $user->setPassword(stripslashes($users['password']));
+            $user->setBusinessman(stripslashes($users['businessman']));
+            $user->setId_enterprise(stripslashes($users['id_enterprise']));
+            $user->setCoordinates(stripslashes($users['coordinates']));
 
             $usersArray[] = clone $user;
         }
@@ -72,7 +72,7 @@ class UserDAO
      */
     public static function getUserById($id, $conn)
     {
-        $sql = "SELECT id_usuario, email, nome, sobrenome, data_nascimento, genero, telefone, avatar, biografia, `status`, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario` WHERE id_usuario = $id";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates  FROM `user` WHERE id_user = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -96,7 +96,7 @@ class UserDAO
      */
     public static function updateUserById(UserVO $user, $conn)
     {
-        $sql = "UPDATE `usuario` SET `nome`='" . $user->getName() . "',`sobrenome`='" . $user->getLastname() . "',`email`='" . $user->getEmail() . "', `senha`='" . $user->getPassword() . "',`data_nascimento`='" . $user->getBirthday() . "',`genero`='" . $user->getGender() . "',`telefone`='" . $user->getPhone() . "',`biografia`='" . $user->getBio() . "',`avatar`='" . $user->getAvatar() . "' WHERE `id_usuario` = " . $user->getId_user() . "";
+        $sql = "UPDATE `user` SET `name`='" . $user->getName() . "',`lastname`='" . $user->getLastname() . "',`email`='" . $user->getEmail() . "', `password`='" . $user->getPassword() . "',`birthday`='" . $user->getBirthday() . "',`gender`='" . $user->getGender() . "',`phone`='" . $user->getPhone() . "',`bio`='" . $user->getBio() . "',`avatar`='" . $user->getAvatar() . "' WHERE `id_user` = " . $user->getId_user() . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -108,11 +108,11 @@ class UserDAO
     }
 
     /**
-     * Esta função é caso o usuario na hora do cadastro não queira ser empreendedor.
+     * Esta função é caso o user na hora do cadastro não queira ser empreendedor.
      */
     public static function ImNotBusinessman($id, $conn)
     {
-        $sql = "UPDATE `usuario` SET `empresario`= 0 WHERE `id_usuario` = " . $id . "";
+        $sql = "UPDATE `user` SET `businessman`= 0 WHERE `id_user` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -128,20 +128,20 @@ class UserDAO
      */
     public static function deleteUserById($id, $conn)
     {
-        // busca usuario pra ver se ele tem empresa
+        // busca user pra ver se ele tem empresa
         $user = UserDAO::getUserById($id, $conn);
-        if ($user['id_empresa'] != null) {
+        if ($user['id_enterprise'] != null) {
             // busca empresa pra ver se ele tem endereco
-            $enterprise = EnterpriseDAO::getEnterpriseById($user['id_empresa'], $conn);
+            $enterprise = EnterpriseDAO::getEnterpriseById($user['id_enterprise'], $conn);
             if ($enterprise['id_endereco'] != null) {
                 $sql = "DELETE FROM `endereco` WHERE `id_endereco` = " . $enterprise['id_endereco'] . "";
                 mysqli_query($conn, $sql);
             }
-            $sql = "DELETE FROM `empresa` WHERE `id_empresa` = " . $user['id_empresa'] . "";
+            $sql = "DELETE FROM `empresa` WHERE `id_enterprise` = " . $user['id_enterprise'] . "";
             mysqli_query($conn, $sql);
         }
 
-        $sql = "DELETE FROM `usuario` WHERE `id_usuario` = $id";
+        $sql = "DELETE FROM `user` WHERE `id_user` = $id";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -153,11 +153,11 @@ class UserDAO
     }
 
     /**
-     * Atualiza as coordenadas do usuário
+     * Atualiza as coordinates do usuário
      */
     public static function updateCoordinatesUser(UserVO $user, $conn)
     {
-        $sql = "UPDATE `usuario` SET `coordenadas`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_usuario` = " . $user->getId_user() . "";
+        $sql = "UPDATE `user` SET `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -173,7 +173,7 @@ class UserDAO
      */
     public static function getCoordinates($id, $conn)
     {
-        $sql = "SELECT ST_AsText(coordenadas) coordenadas  FROM `usuario` WHERE id_usuario = $id";
+        $sql = "SELECT ST_AsText(coordinates) coordinates  FROM `user` WHERE id_user = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {

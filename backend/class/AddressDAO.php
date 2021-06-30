@@ -3,11 +3,11 @@
 class AddressDAO
 {
     /**
-     * Salva endereço na tabela empresa.
+     * Salva endereço na tabela enterprise.
      */
     public static function saveAddress(AddressVO $addressVO, $conn, $id_enterprise = null)
     {
-        $sql = "INSERT INTO `endereco`(`logradouro`, `numero`, `complemento`, `bairro`, `cidade`, `estado`,`pais`, `zipcode`) 
+        $sql = "INSERT INTO `address`(`street`, `number`, `complement`, `district`, `city`, `state`,`country`, `zipcode`) 
         VALUES ('" . $addressVO->getStreet() . "','" . $addressVO->getNumber() . "','" . $addressVO->getComplement() . "','" . $addressVO->getDistrict() . "','" . $addressVO->getCity() . "','" . $addressVO->getState() . "','" . $addressVO->getCountry() . "','" . $addressVO->getZipcode() . "')";
 
         mysqli_query($conn, $sql);
@@ -19,10 +19,10 @@ class AddressDAO
             die();
         }
 
-        /**pega o id do endereço criado e salva na empresa que criou */
+        /**pega o id do endereço criado e salva na enterprise que criou */
         $addressVO->setId_address(mysqli_insert_id($conn));
 
-        $sql = "UPDATE `empresa` SET `id_endereco`='" . $addressVO->getId_address() . "' WHERE `id_empresa` = " . $id_enterprise  . "";
+        $sql = "UPDATE `enterprise` SET `id_address`='" . $addressVO->getId_address() . "' WHERE `id_enterprise` = " . $id_enterprise  . "";
         mysqli_query($conn, $sql);
         if (mysqli_error($conn)) {
             header('HTTP/1.1 400 error in DB');
@@ -37,7 +37,7 @@ class AddressDAO
      */
     public static function getAddressById($id, $conn)
     {
-        $sql = "SELECT * FROM `endereco` WHERE id_endereco = $id";
+        $sql = "SELECT * FROM `address` WHERE id_address = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -57,11 +57,11 @@ class AddressDAO
     }
 
     /**
-     * Atualiza endereço da empresa.
+     * Atualiza endereço da enterprise.
      */
     public static function updateAddressById(AddressVO $addressVO, $conn)
     {
-        $sql = "UPDATE `endereco` SET `logradouro`='" . $addressVO->getStreet() . "',`numero`='" . $addressVO->getNumber() . "',`complemento`='" . $addressVO->getComplement() . "',`bairro`='" . $addressVO->getDistrict() . "',`cidade`='" . $addressVO->getCity() . "',`estado`='" . $addressVO->getState() . "',`pais`='" . $addressVO->getCountry() . "',`zipcode`='" . $addressVO->getZipcode() . "' WHERE '" . $addressVO->getId_address() . "'";
+        $sql = "UPDATE `address` SET `street`='" . $addressVO->getStreet() . "',`number`='" . $addressVO->getNumber() . "',`complement`='" . $addressVO->getComplement() . "',`district`='" . $addressVO->getDistrict() . "',`city`='" . $addressVO->getCity() . "',`state`='" . $addressVO->getState() . "',`country`='" . $addressVO->getCountry() . "',`zipcode`='" . $addressVO->getZipcode() . "' WHERE `id_address` = '" . $addressVO->getId_address() . "'";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -80,7 +80,7 @@ class AddressDAO
         $address = new AddressVO;
         $addressesArray = array();
 
-        $sql = "SELECT * FROM `endereco`";
+        $sql = "SELECT * FROM `address`";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -97,14 +97,14 @@ class AddressDAO
         }
 
         while ($addresses = mysqli_fetch_array($query, true)) {
-            $address->setId_address(stripslashes($addresses['id_endereco']));
-            $address->setStreet(stripslashes($addresses['logradouro']));
-            $address->setNumber(stripslashes($addresses['numero']));
-            $address->setComplement(stripslashes($addresses['complemento']));
-            $address->setDistrict(stripslashes($addresses['bairro']));
-            $address->setCity(stripslashes($addresses['cidade']));
-            $address->setState(stripslashes($addresses['estado']));
-            $address->setCountry(stripslashes($addresses['pais']));
+            $address->setId_address(stripslashes($addresses['id_address']));
+            $address->setStreet(stripslashes($addresses['street']));
+            $address->setNumber(stripslashes($addresses['number']));
+            $address->setComplement(stripslashes($addresses['complement']));
+            $address->setDistrict(stripslashes($addresses['district']));
+            $address->setCity(stripslashes($addresses['city']));
+            $address->setState(stripslashes($addresses['state']));
+            $address->setCountry(stripslashes($addresses['country']));
             $address->setZipcode(stripslashes($addresses['zipcode']));
 
             $addressesArray[] = clone $address;
@@ -118,7 +118,7 @@ class AddressDAO
      */
     public static function deleteAddressById($id, $conn)
     {
-        $sqlE = "SELECT id_empresa FROM empresa WHERE id_endereco = $id";
+        $sqlE = "SELECT id_enterprise FROM enterprise WHERE id_address = $id";
         $enterprise = mysqli_fetch_assoc(mysqli_query($conn, $sqlE));
 
         if (mysqli_error($conn)) {
@@ -128,7 +128,7 @@ class AddressDAO
             die();
         }
 
-        $sql = "UPDATE `empresa` SET `id_endereco`= null WHERE `id_empresa` = " . $enterprise['id_empresa'] . "";
+        $sql = "UPDATE `enterprise` SET `id_address`= null WHERE `id_enterprise` = " . $enterprise['id_enterprise'] . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -138,7 +138,7 @@ class AddressDAO
             die();
         }
 
-        $sql = "DELETE FROM `endereco` WHERE `id_endereco` = $id";
+        $sql = "DELETE FROM `address` WHERE `id_address` = $id";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {

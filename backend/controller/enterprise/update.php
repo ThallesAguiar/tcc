@@ -8,12 +8,12 @@ if ($userVerified->id_enterprise == $id && ($userVerified->businessman == true |
         $enterpriseVO = new EnterpriseVO;
 
         $enterpriseVO->setId_enterprise($id);
-        $enterpriseVO->setCompany_name($array['company_name']);
+        $enterpriseVO->setCorporate_name($array['corporate_name']);
         $enterpriseVO->setFantasy_name($array['fantasy_name']);
-        $enterpriseVO->setNumber_pj($array['number_pj']);
-        $enterpriseVO->setNumber_pf($array['number_pf']);
+        $enterpriseVO->setNumbering_company($array['numbering_company']);
+        $enterpriseVO->getNumbering_personal($array['numbering_personal']);
         $enterpriseVO->setDescription($array['description']);
-        $enterpriseVO->setType_company($array['type_company']);
+        $enterpriseVO->setEnterprise_type($array['enterprise_type']);
 
         EnterpriseDAO::updateEnterpriseById($enterpriseVO, $conn);
 

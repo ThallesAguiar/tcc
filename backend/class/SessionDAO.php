@@ -7,11 +7,11 @@ use Firebase\JWT\JWT;
 class SessionDAO
 {
     /**
-     * Faz verificação em usuario através de email
+     * Faz verificação em user através de email
      */
     public function verifiryUser(UserVO $user, $conn)
     {
-        $sql = "SELECT email,nome,biografia, senha, id_usuario, empresario, id_empresa, ST_AsText(coordenadas) coordenadas  FROM `usuario` WHERE `email` = '" . $user->getEmail() . "'";
+        $sql = "SELECT email,name,bio, password, id_user, businessman, id_enterprise, ST_AsText(coordinates) coordinates  FROM `user` WHERE `email` = '" . $user->getEmail() . "'";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_num_rows($query) <= 0) {
@@ -22,19 +22,19 @@ class SessionDAO
 
         $values = mysqli_fetch_assoc($query);
 
-        if (md5($user->getPassword()) != $values['senha']) {
+        if (md5($user->getPassword()) != $values['password']) {
             header('HTTP/1.1 400 passwords not match!');
             echo json_encode(["error" => "Passwords not match!"]);
             die();
         }
 
-        $user->setName($values['nome']);
-        $user->setBio($values['biografia']);
+        $user->setName($values['name']);
+        $user->setBio($values['bio']);
         $user->setPassword(null);
-        $user->setId_user($values['id_usuario']);
-        $user->setBusinessman($values['empresario']);
-        $user->setId_enterprise($values['id_empresa']);
-        $user->setCoordinates($values['coordenadas']);
+        $user->setId_user($values['id_user']);
+        $user->setBusinessman($values['businessman']);
+        $user->setId_enterprise($values['id_enterprise']);
+        $user->setCoordinates($values['coordinates']);
 
         return true;
     }

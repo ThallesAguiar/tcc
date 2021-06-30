@@ -7,12 +7,12 @@ $arrayAux = array();
 
 foreach ($enterprises as $enterprise) {
     $enterpriseArray['id_enterprise'] = $enterprise->getId_enterprise();
-    $enterpriseArray['company_name'] = $enterprise->getCompany_name();
+    $enterpriseArray['corporate_name'] = $enterprise->getCorporate_name();
     $enterpriseArray['fantasy_name'] = $enterprise->getFantasy_name();
-    $enterpriseArray['number_pj'] = $enterprise->getNumber_pj();
-    $enterpriseArray['number_pf'] = $enterprise->getNumber_pf();
+    $enterpriseArray['numbering_company'] = $enterprise->getNumbering_company();
+    $enterpriseArray['numbering_personal'] = $enterprise->getNumbering_personal();
     $enterpriseArray['description'] =  $enterprise->getDescription();
-    $enterpriseArray['type_company'] = $enterprise->getType_company();
+    $enterpriseArray['enterprise_type'] = $enterprise->getEnterprise_type();
     $enterpriseArray['id_address'] = $enterprise->getId_address();
     
     $arrayAux[] = $enterpriseArray;

@@ -3,14 +3,16 @@
 class EnterpriseVO
 {
     private $id_enterprise;
-    private $company_name;
+    private $corporate_name;
     private $fantasy_name;
-    private $number_pj;
-    private $number_pf;
+    private $numbering_company;
+    private $numbering_personal;
     private $description;
-    private $ativo;
-    private $type_company;
+    private $enterprise_type;
     private $id_address;
+    private $active;
+
+
 
     /**
      * Get the value of id_enterprise
@@ -36,25 +38,25 @@ class EnterpriseVO
     }
 
     /**
-     * Get the value of company_name
+     * Get the value of corporate_name
      *
      * @return  mixed
      */
-    public function getCompany_name()
+    public function getCorporate_name()
     {
-        return $this->company_name;
+        return $this->corporate_name;
     }
 
     /**
-     * Set the value of company_name
+     * Set the value of corporate_name
      *
-     * @param   mixed  $company_name  
+     * @param   mixed  $corporate_name  
      *
      * @return  self
      */
-    public function setCompany_name($company_name)
+    public function setCorporate_name($corporate_name)
     {
-        $this->company_name = $company_name;
+        $this->corporate_name = $corporate_name;
         return $this;
     }
 
@@ -82,48 +84,48 @@ class EnterpriseVO
     }
 
     /**
-     * Get the value of number_pj
+     * Get the value of numbering_company
      *
      * @return  mixed
      */
-    public function getNumber_pj()
+    public function getNumbering_company()
     {
-        return $this->number_pj;
+        return $this->numbering_company;
     }
 
     /**
-     * Set the value of number_pj
+     * Set the value of numbering_company
      *
-     * @param   mixed  $number_pj  
+     * @param   mixed  $numbering_company  
      *
      * @return  self
      */
-    public function setNumber_pj($number_pj)
+    public function setNumbering_company($numbering_company)
     {
-        $this->number_pj = $number_pj;
+        $this->numbering_company = $numbering_company;
         return $this;
     }
 
     /**
-     * Get the value of number_pf
+     * Get the value of numbering_personal
      *
      * @return  mixed
      */
-    public function getNumber_pf()
+    public function getNumbering_personal()
     {
-        return $this->number_pf;
+        return $this->numbering_personal;
     }
 
     /**
-     * Set the value of number_pf
+     * Set the value of numbering_personal
      *
-     * @param   mixed  $number_pf  
+     * @param   mixed  $numbering_personal  
      *
      * @return  self
      */
-    public function setNumber_pf($number_pf)
+    public function setNumbering_personal($numbering_personal)
     {
-        $this->number_pf = $number_pf;
+        $this->numbering_personal = $numbering_personal;
         return $this;
     }
 
@@ -151,25 +153,25 @@ class EnterpriseVO
     }
 
     /**
-     * Get the value of type_company
+     * Get the value of enterprise_type
      *
      * @return  mixed
      */
-    public function getType_company()
+    public function getEnterprise_type()
     {
-        return $this->type_company;
+        return $this->enterprise_type;
     }
 
     /**
-     * Set the value of type_company
+     * Set the value of enterprise_type
      *
-     * @param   mixed  $type_company  
+     * @param   mixed  $enterprise_type  
      *
      * @return  self
      */
-    public function setType_company($type_company)
+    public function setEnterprise_type($enterprise_type)
     {
-        $this->type_company = $type_company;
+        $this->enterprise_type = $enterprise_type;
         return $this;
     }
 
@@ -197,22 +199,25 @@ class EnterpriseVO
     }
 
     /**
-     * Get the value of ativo
+     * Get the value of active
+     *
+     * @return  mixed
      */
-    public function getAtivo()
+    public function getActive()
     {
-        return $this->ativo;
+        return $this->active;
     }
 
     /**
-     * Set the value of ativo
+     * Set the value of active
+     *
+     * @param   mixed  $active  
      *
      * @return  self
      */
-    public function setAtivo($ativo)
+    public function setActive($active)
     {
-        $this->ativo = $ativo;
-
+        $this->active = $active;
         return $this;
     }
 }

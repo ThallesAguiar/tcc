@@ -7,8 +7,8 @@ class EnterpriseDAO
      */
     public function saveEnterprise(EnterpriseVO $enterpriseVO, $id_user, $conn)
     {
-        $sql = "INSERT INTO `empresa`(`razao_social`, `nome_empresa`, `numero_PJ`, `numero_PF`, `descricao`,`tipo_empreendimento`) 
-        VALUES ('" . $enterpriseVO->getCompany_name() . "','" . $enterpriseVO->getFantasy_name() . "','" . $enterpriseVO->getNumber_pj() . "','" . $enterpriseVO->getNumber_pf() . "','" . $enterpriseVO->getDescription() . "','" . $enterpriseVO->getType_company() . "')";
+        $sql = "INSERT INTO `enterprise`(`corporate_name`, `fantasy_name`, `numbering_company`, `numbering_personal`, `description`,`enterprise_type`) 
+        VALUES ('" . $enterpriseVO->getCorporate_name() . "','" . $enterpriseVO->getFantasy_name() . "','" . $enterpriseVO->getNumbering_company() . "','" . $enterpriseVO->getNumbering_personal() . "','" . $enterpriseVO->getDescription() . "','" . $enterpriseVO->getEnterprise_type() . "')";
 
         mysqli_query($conn, $sql);
 
@@ -22,7 +22,7 @@ class EnterpriseDAO
         /**pega o id da empresa criada e salva no usuario que criou */
         $enterpriseVO->setId_enterprise(mysqli_insert_id($conn));
 
-        $sql = "UPDATE `usuario` SET `empresario`= 1,`id_empresa`='" . $enterpriseVO->getId_enterprise() . "' WHERE `id_usuario` = " . $id_user  . "";
+        $sql = "UPDATE `user` SET `businessman`= 1,`id_enterprise`='" . $enterpriseVO->getId_enterprise() . "' WHERE `id_user` = " . $id_user  . "";
         mysqli_query($conn, $sql);
         if (mysqli_error($conn)) {
             header('HTTP/1.1 400 error in DB');
@@ -37,7 +37,7 @@ class EnterpriseDAO
      */
     public static function updateEnterpriseById(EnterpriseVO $enterpriseVO, $conn)
     {
-        $sql = "UPDATE `empresa` SET `razao_social`='" . $enterpriseVO->getCompany_name() . "',`nome_empresa`='" . $enterpriseVO->getFantasy_name() . "',`numero_PJ`='" . $enterpriseVO->getNumber_pj() . "',`numero_PF`='" . $enterpriseVO->getNumber_pf() . "',`descricao`='" . $enterpriseVO->getDescription() . "',`tipo_empreendimento`='" . $enterpriseVO->getType_company() . "' WHERE `id_empresa` = " . $enterpriseVO->getId_enterprise() . "";
+        $sql = "UPDATE `enterprise` SET `corporate_name`='" . $enterpriseVO->getCorporate_name() . "',`fantasy_name`='" . $enterpriseVO->getFantasy_name() . "',`numbering_company`='" . $enterpriseVO->getNumbering_company() . "',`numbering_personal`='" . $enterpriseVO->getNumbering_personal() . "',`description`='" . $enterpriseVO->getDescription() . "',`enterprise_type`='" . $enterpriseVO->getEnterprise_type() . "' WHERE `id_enterprise` = " . $enterpriseVO->getId_enterprise() . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -53,7 +53,7 @@ class EnterpriseDAO
      */
     public static function getEnterpriseById($id, $conn)
     {
-        $sql = "SELECT * FROM `empresa` WHERE id_empresa = $id";
+        $sql = "SELECT * FROM `enterprise` WHERE id_enterprise = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -73,14 +73,14 @@ class EnterpriseDAO
     }
 
     /**
-     * Busca todos os usuário no Banco de dados.
+     * Busca todos as empresas no Banco de dados.
      */
     public static function getAllEnterprises($conn)
     {
         $enterprise = new EnterpriseVO;
         $enterprisesArray = array();
 
-        $sql = "SELECT * FROM `empresa`";
+        $sql = "SELECT * FROM `enterprise`";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -97,13 +97,13 @@ class EnterpriseDAO
         }
 
         while ($enterprises = mysqli_fetch_array($query, true)) {
-            $enterprise->setId_enterprise($enterprises['id_empresa']);
-            $enterprise->setCompany_name($enterprises['razao_social']);
-            $enterprise->setFantasy_name($enterprises['nome_empresa']);
-            $enterprise->setNumber_pj($enterprises['numero_PJ']);
-            $enterprise->setNumber_pf($enterprises['numero_PF']);
-            $enterprise->setDescription($enterprises['descricao']);
-            $enterprise->setType_company($enterprises['tipo_empreendimento']);
+            $enterprise->setId_enterprise($enterprises['id_enterprise']);
+            $enterprise->setCorporate_name($enterprises['corporate_name']);
+            $enterprise->setFantasy_name($enterprises['fantasy_name']);
+            $enterprise->setNumbering_company($enterprises['numbering_company']);
+            $enterprise->getNumbering_personal($enterprises['numbering_personal']);
+            $enterprise->setDescription($enterprises['description']);
+            $enterprise->setEnterprise_type($enterprises['enterprise_type']);
 
             $enterprisesArray[] = clone $enterprise;
         }
@@ -116,7 +116,7 @@ class EnterpriseDAO
      */
     public static function disableCompany($id, $conn)
     {
-        $sql = "UPDATE `empresa` SET `ativo`= 0  WHERE `id_empresa` = " . $id . "";
+        $sql = "UPDATE `enterprise` SET `active`= 0  WHERE `id_enterprise` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -126,7 +126,7 @@ class EnterpriseDAO
             die();
         }
 
-        $sql = "UPDATE `usuario` SET `empresario`= 0  WHERE `id_empresa` = " . $id . "";
+        $sql = "UPDATE `usuario` SET `businessman`= 0  WHERE `id_enterprise` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -142,7 +142,7 @@ class EnterpriseDAO
      */
     public static function reactivateCompany($id, $conn)
     {
-        $sql = "UPDATE `empresa` SET `ativo`= 1  WHERE `id_empresa` = " . $id . "";
+        $sql = "UPDATE `enterprise` SET `active`= 1  WHERE `id_enterprise` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -152,7 +152,7 @@ class EnterpriseDAO
             die();
         }
 
-        $sql = "UPDATE `usuario` SET `empresario`= 1  WHERE `id_empresa` = " . $id . "";
+        $sql = "UPDATE `usuario` SET `businessman`= 1  WHERE `id_enterprise` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
