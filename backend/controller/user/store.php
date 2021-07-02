@@ -22,6 +22,8 @@ if($array = json_decode(file_get_contents("php://input"), true)):
     $userVO->setBio($array['bio']);
     $userVO->setAvatar($array['avatar']);
     $userVO->setCoordinates($array['lat']." ".$array['lng']);
+    $userVO->setLat($array['lat']);
+    $userVO->setLng($array['lng']);
 
     $userDAO->saveUser($userVO, $conn);
 

@@ -22,21 +22,4 @@ if ($array = json_decode(file_get_contents("php://input"), true)) :
     header('HTTP/1.1 200 Login success');
     ob_clean();
     echo json_encode(["user" => $user, "token" => $token], JSON_UNESCAPED_SLASHES);
-
-// $array = [
-//     "user" => [
-//         "id_user" => $userVO->getId_user(),
-//         "name" => $userVO->getName(),
-//         "email" => $userVO->getEmail(),
-//         "bio" => $userVO->getBio(),
-//         "businessman" => $userVO->getBusinessman(),
-//         "id_enterprise" => $userVO->getId_enterprise(),
-//         "coordinates" => $userVO->getCoordinates()
-//     ],
-//     "token" => $token
-// ];
-
-// header('HTTP/1.1 200 Login success');
-// ob_clean();
-// echo json_encode($array);
 endif;

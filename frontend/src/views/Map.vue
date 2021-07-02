@@ -8,10 +8,12 @@
     />
     <MglMarker :coordinates="myCoordinates">
       <div slot="marker">
+        <div>
         <img
           style="border-radius: 50%; width: 50px; height: 50px"
           :src="user.avatar"
         />
+        </div>
       </div>
 
       <MglPopup anchor="bottom">
@@ -88,16 +90,9 @@ export default {
             id_user: id,
             lat: this.myCoordinates[1],
             lng: this.myCoordinates[0],
-          },
-          {
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Headers": "*",
-              Authorization: localStorage.getItem("token"),
-            },
           }
         );
-        console.log(coordsCurrent.data.coordenadas);
+        console.log(coordsCurrent.data);
       } catch (error) {}
     },
 
@@ -115,7 +110,7 @@ export default {
 
     nameComplete(){
       const user = JSON.parse(localStorage.getItem("user"));
-      return user.nome+' '+user.sobrenome;
+      return user.name+' '+user.lastname;
     }
   },
 
@@ -123,7 +118,7 @@ export default {
     this.mapbox = Mapbox;
     this.user = JSON.parse(localStorage.getItem("user"));
 
-    this.updateCoordinatesUser(this.user.id_usuario);
+    this.updateCoordinatesUser(this.user.id_user);
     
     setInterval(function () {
       navigator.geolocation.getCurrentPosition(

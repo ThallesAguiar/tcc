@@ -8,8 +8,11 @@ class UserDAO
      */
     public function saveUser(UserVO $userVO, $conn)
     {
-        $sql = "INSERT INTO `user`(`name`, `lastname`, `email`, `businessman`, `password`, `birthday`, `gender`, `phone`, `bio`, `coordinates`) 
-        VALUES ('" . $userVO->getName() . "','" . $userVO->getLastname() . "','" . $userVO->getEmail() . "','" . $userVO->getBusinessman() . "','" . md5($userVO->getPassword()) . "','" . $userVO->getBirthday() . "','" . $userVO->getGender() . "','" . $userVO->getPhone() . "','" . $userVO->getBio() . "',ST_GeomFromText('POINT(" . $userVO->getCoordinates() . ")'))";
+        date_default_timezone_set('America/Sao_Paulo');
+        $now = date('Y-m-d H:i:s');
+
+        $sql = "INSERT INTO `user`(`name`, `lastname`, `email`, `businessman`, `password`, `birthday`, `gender`, `phone`, `bio`, `coordinates`, `lat`,`lng`,`created`) 
+        VALUES ('" . $userVO->getName() . "','" . $userVO->getLastname() . "','" . $userVO->getEmail() . "','" . $userVO->getBusinessman() . "','" . md5($userVO->getPassword()) . "','" . $userVO->getBirthday() . "','" . $userVO->getGender() . "','" . $userVO->getPhone() . "','" . $userVO->getBio() . "',ST_GeomFromText('POINT(" . $userVO->getCoordinates() . ")'),'" . $userVO->getLat() . "','" . $userVO->getLng() . "', '$now')";
 
         mysqli_query($conn, $sql);
 
@@ -26,10 +29,9 @@ class UserDAO
      */
     public static function getAllUsers($conn)
     {
-        $user = new UserVO;
         $usersArray = array();
 
-        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`,  password, businessman, id_enterprise, ST_AsText(coordinates) coordinates  FROM `user`";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng  FROM `user`";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -46,22 +48,8 @@ class UserDAO
         }
 
         while ($users = mysqli_fetch_array($query, true)) {
-            $user->setId_user(stripslashes($users['id_user']));
-            $user->setEmail(stripslashes($users['email']));
-            $user->setName(stripslashes($users['name']));
-            $user->setLastname(stripslashes($users['lastname']));
-            $user->setBirthday(stripslashes($users['birthday']));
-            $user->setGender(stripslashes($users['gender']));
-            $user->setPhone(stripslashes($users['phone']));
-            $user->setAvatar(stripslashes($users['avatar']));
-            $user->setBio(stripslashes($users['bio']));
-            $user->setStatus(stripslashes($users['status']));
-            $user->setPassword(stripslashes($users['password']));
-            $user->setBusinessman(stripslashes($users['businessman']));
-            $user->setId_enterprise(stripslashes($users['id_enterprise']));
-            $user->setCoordinates(stripslashes($users['coordinates']));
 
-            $usersArray[] = clone $user;
+            $usersArray[] = $users;
         }
 
         return $usersArray;
@@ -72,7 +60,7 @@ class UserDAO
      */
     public static function getUserById($id, $conn)
     {
-        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates  FROM `user` WHERE id_user = $id";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng  FROM `user` WHERE id_user = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -157,7 +145,8 @@ class UserDAO
      */
     public static function updateCoordinatesUser(UserVO $user, $conn)
     {
-        $sql = "UPDATE `user` SET `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
+        // $sql = "UPDATE `user` SET `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
+        $sql = "UPDATE `user` SET `lat`= '".$user->getLat() . "', `lng`= '".$user->getLng() . "', `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -173,7 +162,8 @@ class UserDAO
      */
     public static function getCoordinates($id, $conn)
     {
-        $sql = "SELECT ST_AsText(coordinates) coordinates  FROM `user` WHERE id_user = $id";
+        // $sql = "SELECT ST_AsText(coordinates) coordinates  FROM `user` WHERE id_user = $id";
+        $sql = "SELECT lat, lng  FROM `user` WHERE id_user = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {

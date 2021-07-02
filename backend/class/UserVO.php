@@ -16,6 +16,8 @@ class UserVO
     private $id_enterprise;
     private $avatar;
     private $coordinates;
+    private $lat;
+    private $lng;
 
     /**
      * Get the value of id_user
@@ -336,6 +338,52 @@ class UserVO
     public function setCoordinates($coordinates)
     {
         $this->coordinates = $coordinates;
+        return $this;
+    }
+
+    /**
+     * Get the value of lat
+     *
+     * @return  mixed
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * Set the value of lat
+     *
+     * @param   mixed  $lat  
+     *
+     * @return  self
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+        return $this;
+    }
+
+    /**
+     * Get the value of lng
+     *
+     * @return  mixed
+     */
+    public function getLng()
+    {
+        return $this->lng;
+    }
+
+    /**
+     * Set the value of lng
+     *
+     * @param   mixed  $lng  
+     *
+     * @return  self
+     */
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
         return $this;
     }
 }

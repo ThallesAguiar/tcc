@@ -25,6 +25,8 @@ if ($array = json_decode(file_get_contents("php://input"), true)) :
 
         $userVO->setId_user($userVerified->id);
         $userVO->setCoordinates($array['lat'] . " " . $array['lng']);
+        $userVO->setLat($array['lat']);
+        $userVO->setLng($array['lng']);
 
         UserDAO::updateCoordinatesUser($userVO, $conn);
 
