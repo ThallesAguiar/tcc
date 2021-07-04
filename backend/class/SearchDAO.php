@@ -14,11 +14,17 @@ class SearchDAO
         }
 
         $sql = "SELECT 
-        *,
+        concat(u.name, ' ', u.lastname) as nameComplete,
+        u.avatar, 
+        u.businessman, 
+        u.id_enterprise, 
+        u.id_user,
+        u.lng,  
+        u.lat,  
         ($dist * ACOS(COS(RADIANS($lat)) * COS(RADIANS(Y(coordinates))) 
         * COS(RADIANS(ST_X(coordinates)) - RADIANS($lng)) + SIN(RADIANS($lat))
         * SIN(RADIANS(ST_Y(coordinates))))) AS distance
-    FROM user
+    FROM user u
     WHERE MBRContains
         (
         LineString
@@ -35,6 +41,7 @@ class SearchDAO
         coordinates
         )
         AND id_user != $id_user
+        AND `status` = 'ATIVO'
     HAVING distance < $range
     ORDER By distance";
 
