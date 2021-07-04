@@ -1,33 +1,95 @@
 <template>
-  <MglMap :accessToken="accessToken" :mapStyle="mapStyle">
-    <MglNavigationControl position="top-right" />
-    <MglGeolocateControl
-      position="top-right"
-      :trackUserLocation="true"
-      :showUserLocation="false"
-    />
-    <MglMarker :coordinates="myCoordinates">
-      <div slot="marker">
-        <div>
-        <img
-          style="border-radius: 50%; width: 50px; height: 50px"
-          :src="user.avatar"
-        />
+  <div>
+    <div
+      class="row "
+      style="z-index:1; position: absolute; top:10%; margin:auto; width:100%;"
+    >
+      <div class="col"></div>
+      <div class="col-8 col-md-4">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for ..."
+            aria-label="Search for ..."
+            aria-describedby="button-addon2"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-info" type="button" id="button-addon2">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
         </div>
       </div>
+      <div class="col"></div>
+    </div>
 
-      <MglPopup anchor="bottom">
-        <button type="button" class="btn btn-link" @click="visitProfile()">
-        {{ nameComplete }}
-        </button>
-      </MglPopup> 
-    </MglMarker>
-  </MglMap>
+    <button
+      type="button"
+      style="z-index:1; width:50px; position:absolute; top:15%; right:5px;"
+      class="btn btn-light"
+      @click="searchUsers()"
+    >
+      <i class="fa fa-users"></i>
+      <i class="fa fa-search fa-sm"></i>
+    </button>
+
+    <MglMap
+      :accessToken="accessToken"
+      :mapStyle="mapStyle"
+      :center="myCoordinates"
+      hash
+    >
+      <MglGeolocateControl
+        position="top-right"
+        :trackUserLocation="true"
+        :showUserLocation="false"
+      />
+      <MglMarker :coordinates="myCoordinates">
+        <div slot="marker">
+          <div>
+            <img
+              style="border-radius: 50%; width: 50px; height: 50px"
+              :src="user.avatar"
+            />
+          </div>
+        </div>
+
+        <MglPopup anchor="bottom">
+          <button type="button" class="btn btn-link">
+            {{ nameComplete }}
+          </button>
+        </MglPopup>
+      </MglMarker>
+
+      <MglMarker
+        v-for="marker in markers"
+        :key="marker.id_user"
+        :coordinates="[marker.lng, marker.lat]"
+      >
+        <div slot="marker">
+          <div>
+            <img
+              style="border-radius: 50%; width: 50px; height: 50px"
+              :src="user.avatar"
+            />
+          </div>
+        </div>
+
+        <MglPopup anchor="bottom">
+          <button type="button"  class="btn btn-link nav-link" @click="visitProfile(marker.id_user)">
+            {{ marker.nameComplete }} <br> <small>{{ marker.distance +' '+ unit +' away' }}</small>
+          </button>
+        </MglPopup>
+      </MglMarker>
+    </MglMap>
+  </div>
 </template>
 
 <script>
 import api from "../service/api";
 import Mapbox from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import {
   MglMap,
   MglNavigationControl,
@@ -53,6 +115,9 @@ export default {
       mapStyle: "mapbox://styles/mapbox/streets-v11",
       myCoordinates: JSON.parse(localStorage.getItem("coordinates")),
       user: {},
+      markers: [],
+      unit: "",
+      range: "",
     };
   },
 
@@ -80,25 +145,45 @@ export default {
       );
     },
     async updateCoordinatesUser(id) {
-      
       this.getCoordinatesCurrent();
 
       try {
-        const coordsCurrent = await api.put(
-          `coordinates/update.php`,
-          {
-            id_user: id,
-            lat: this.myCoordinates[1],
-            lng: this.myCoordinates[0],
-          }
-        );
+        const coordsCurrent = await api.put(`coordinates/update.php`, {
+          id_user: id,
+          lat: this.myCoordinates[1],
+          lng: this.myCoordinates[0],
+        });
         console.log(coordsCurrent.data);
       } catch (error) {}
     },
 
-    visitProfile(){
-      console.log("visitar perfil");
-    }
+    visitProfile(id) {
+      console.log("visitar perfil"+id);
+    },
+
+    async searchUsers() {
+      const { id_user } = this.user;
+      const lat = this.myCoordinates[1];
+      const lng = this.myCoordinates[0];
+      const range = localStorage.getItem("range")
+        ? localStorage.getItem("range")
+        : 10;
+      const unit = localStorage.getItem("unit")
+        ? localStorage.getItem("unit")
+        : "kilometres";
+
+      try {
+        const usersForRange = await api.get(
+          `search/index.php?id=${id_user}&lat=${lat}&lng=${lng}&range=${range}&unit=${unit}`
+        );
+        console.log(usersForRange.data.markers);
+        this.markers = usersForRange.data.markers;
+        this.unit = usersForRange.data.unit;
+        this.range = usersForRange.data.range;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 
   computed: {
@@ -108,10 +193,10 @@ export default {
       else return false;
     },
 
-    nameComplete(){
+    nameComplete() {
       const user = JSON.parse(localStorage.getItem("user"));
-      return user.name+' '+user.lastname;
-    }
+      return user.name + " " + user.lastname;
+    },
   },
 
   created() {
@@ -119,8 +204,8 @@ export default {
     this.user = JSON.parse(localStorage.getItem("user"));
 
     this.updateCoordinatesUser(this.user.id_user);
-    
-    setInterval(function () {
+
+    setInterval(function() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;

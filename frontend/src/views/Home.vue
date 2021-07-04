@@ -2,7 +2,7 @@
   <div>
     <nav
       class="navbar navbar-expand-lg navbar-dark"
-      style="background-color: teal;"
+      style="background-color: teal; z-index:9"
     >
       <a class="navbar-brand font-weight-bold" href="#"
         ><img
