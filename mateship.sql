@@ -1,102 +1,34 @@
--- phpMyAdmin SQL Dump
--- version 5.1.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Tempo de geração: 01-Jul-2021 às 00:42
--- Versão do servidor: 10.4.18-MariaDB
--- versão do PHP: 8.0.3
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- --------------------------------------------------------
+-- Servidor:                     127.0.0.1
+-- Versão do servidor:           10.4.18-MariaDB - mariadb.org binary distribution
+-- OS do Servidor:               Win64
+-- HeidiSQL Versão:              11.3.0.6295
+-- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Banco de dados: `mateship`
---
-CREATE DATABASE IF NOT EXISTS `mateship` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `mateship`;
+-- Copiando dados para a tabela mateship.address: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `address` DISABLE KEYS */;
+/*!40000 ALTER TABLE `address` ENABLE KEYS */;
 
--- --------------------------------------------------------
+-- Copiando dados para a tabela mateship.enterprise: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `enterprise` DISABLE KEYS */;
+/*!40000 ALTER TABLE `enterprise` ENABLE KEYS */;
 
---
--- Estrutura da tabela `address`
---
+-- Copiando dados para a tabela mateship.user: ~3 rows (aproximadamente)
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` (`id_user`, `name`, `lastname`, `email`, `businessman`, `status`, `password`, `birthday`, `gender`, `phone`, `bio`, `id_enterprise`, `avatar`, `coordinates`, `lat`, `lng`, `created`) VALUES
+	(12, 'Thalles', 'Stark', 'stark@email.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png', _binary 0x000000000101000000e50cc51d6f7048c076fc1708020c3bc0, -27.046906, -48.878391, '2021-07-01 19:03:06'),
+	(13, 'Thalles', 'Aguiar', 'stark@aguiar.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://cf.shopee.com.br/file/9c4784b91814ae1b24dec91d05fc28a4', _binary 0x000000000101000000bbf1eec8586f48c0bbf083f3a90b3bc0, -27.045563, -48.869896, '2021-07-01 20:40:32'),
+	(14, 'Tony', 'Stark', 'tony@stark.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://cf.shopee.com.br/file/9c4784b91814ae1b24dec91d05fc28a4', _binary 0x000000000101000000bad7497d596f48c0c3baf1eec80c3bc0, -27.049940, -48.869919, '2021-07-01 20:41:40');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
-CREATE TABLE IF NOT EXISTS `address` (
-  `id_address` int(11) NOT NULL AUTO_INCREMENT,
-  `street` varchar(200) NOT NULL,
-  `number` varchar(10) NOT NULL,
-  `complement` varchar(100) DEFAULT NULL,
-  `district` varchar(100) NOT NULL,
-  `city` varchar(100) NOT NULL,
-  `state` varchar(100) NOT NULL,
-  `country` varchar(50) NOT NULL,
-  `zipcode` varchar(50) NOT NULL,
-  PRIMARY KEY (`id_address`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `enterprise`
---
-
-CREATE TABLE IF NOT EXISTS `enterprise` (
-  `id_enterprise` int(11) NOT NULL AUTO_INCREMENT,
-  `corporate_name` varchar(200) NOT NULL,
-  `fantasy_name` varchar(200) DEFAULT NULL,
-  `numbering_company` varchar(50) DEFAULT NULL COMMENT 'numero do registro da empresa se for PJ',
-  `numbering_personal` varchar(50) DEFAULT NULL COMMENT 'numero do CPF caso não for PJ',
-  `description` varchar(250) DEFAULT NULL,
-  `enterprise_type` varchar(100) NOT NULL,
-  `id_address` int(11) NOT NULL,
-  `active` tinyint(4) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id_enterprise`),
-  UNIQUE KEY `numero_PJ` (`numbering_company`),
-  UNIQUE KEY `numero_PF` (`numbering_personal`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `user`
---
-
-CREATE TABLE IF NOT EXISTS `user` (
-  `id_user` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `lastname` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `businessman` tinyint(1) DEFAULT 0,
-  `status` varchar(50) NOT NULL DEFAULT 'ATIVO',
-  `password` varchar(200) NOT NULL,
-  `birthday` date NOT NULL,
-  `gender` enum('M','F') NOT NULL,
-  `phone` varchar(50) DEFAULT NULL,
-  `bio` text NOT NULL,
-  `id_enterprise` int(11) DEFAULT NULL,
-  `avatar` varchar(500) DEFAULT 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png',
-  `coordinates` point NOT NULL,
-  PRIMARY KEY (`id_user`),
-  UNIQUE KEY `email UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-
---
--- Extraindo dados da tabela `user`
---
-
-INSERT INTO `user` (`id_user`, `name`, `lastname`, `email`, `businessman`, `status`, `password`, `birthday`, `gender`, `phone`, `bio`, `id_enterprise`, `avatar`, `coordinates`) VALUES
-(1, 'Thalles', 'Aguiar', 'thalles@email.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png', 0x0000000001010000003d80457efd103bc01f1329cde67148c0),
-(4, 'Thalles', 'Stark', 'stark@email.com', 0, 'ATIVO', 'e10adc3949ba59abbe56e057f20f883e', '1996-02-18', 'M', '55984488864', 'olá, eu sou o Thalles', NULL, 'https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png', 0x000000000101000000662fdb4e5b6f48c046990d32c90c3bc0);
-COMMIT;
-
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
