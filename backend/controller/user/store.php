@@ -21,7 +21,7 @@ if($array = json_decode(file_get_contents("php://input"), true)):
     $userVO->setPhone($array['phone']);
     $userVO->setBio($array['bio']);
     $userVO->setAvatar($array['avatar']);
-    $userVO->setCoordinates($array['lat']." ".$array['lng']);
+    $userVO->setCoordinates($array['lng']." ".$array['lat']);
     $userVO->setLat($array['lat']);
     $userVO->setLng($array['lng']);
 
