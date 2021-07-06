@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div
+    <!-- <div
       class="row "
       style="z-index:1; position: absolute; top:10%; margin:auto; width:100%;"
     >
@@ -22,13 +22,32 @@
         </div>
       </div>
       <div class="col"></div>
-    </div>
-
+    </div> -->
+    <transition name="slide" mode="out-in">
+      <div
+        v-if="loading"
+        class="row align-items-center"
+        style="
+          position: absolute;
+          left: 10px;
+          z-index: 1;
+          width: 100%;
+          height: 90vh;
+        "
+      >
+        <img
+          src="../assets/loading.gif"
+          alt="Searching users"
+          class="img-fluid"
+          style="margin: auto"
+        />
+      </div>
+    </transition>
     <button
       type="button"
-      style="z-index:1; width:50px; position:absolute; top:15%; right:5px;"
+      style="z-index: 1; width: 50px; position: absolute; top: 15%; right: 5px"
       class="btn btn-light"
-      @click="searchUsers()"
+      @click="activeSearchUsers()"
     >
       <i class="fa fa-users"></i>
       <i class="fa fa-search fa-sm"></i>
@@ -77,8 +96,13 @@
         </div>
 
         <MglPopup anchor="bottom">
-          <button type="button"  class="btn btn-link nav-link" @click="visitProfile(marker.id_user)">
-            {{ marker.nameComplete }} <br> <small>{{ marker.distance +' '+ unit +' away' }}</small>
+          <button
+            type="button"
+            class="btn btn-link nav-link"
+            @click="visitProfile(marker.id_user)"
+          >
+            {{ marker.nameComplete }} <br />
+            <small>{{ marker.distance + " " + unit + " away" }}</small>
           </button>
         </MglPopup>
       </MglMarker>
@@ -118,6 +142,7 @@ export default {
       markers: [],
       unit: "",
       range: "",
+      loading: false,
     };
   },
 
@@ -131,7 +156,7 @@ export default {
 
           if (!localStorage.getItem("coordinates"))
             localStorage.setItem("coordinates", JSON.stringify(coord));
-          console.log(coord);
+          // console.log(coord);
           this.myCoordinates = coord;
         },
         (err) => {
@@ -153,15 +178,15 @@ export default {
           lat: this.myCoordinates[1],
           lng: this.myCoordinates[0],
         });
-        console.log(coordsCurrent.data);
       } catch (error) {}
     },
 
     visitProfile(id) {
-      console.log("visitar perfil"+id);
+      console.log("visitar perfil" + id);
     },
 
     async searchUsers() {
+      this.loading = true;
       const { id_user } = this.user;
       const lat = this.myCoordinates[1];
       const lng = this.myCoordinates[0];
@@ -176,13 +201,24 @@ export default {
         const usersForRange = await api.get(
           `search/index.php?id=${id_user}&lat=${lat}&lng=${lng}&range=${range}&unit=${unit}`
         );
-        console.log(usersForRange.data.markers);
         this.markers = usersForRange.data.markers;
         this.unit = usersForRange.data.unit;
         this.range = usersForRange.data.range;
+
+        setTimeout(() => {
+          this.loading = false;
+        }, 2000);
       } catch (error) {
         console.log(error);
       }
+    },
+
+    activeSearchUsers() {
+      this.searchUsers();
+
+      setInterval(() => {
+        this.searchUsers();
+      }, 500000);
     },
   },
 
@@ -205,7 +241,7 @@ export default {
 
     this.updateCoordinatesUser(this.user.id_user);
 
-    setInterval(function() {
+    setInterval(function () {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -214,7 +250,6 @@ export default {
 
           if (!localStorage.getItem("coordinates"))
             localStorage.setItem("coordinates", JSON.stringify(coord));
-          console.log(coord);
           this.myCoordinates = coord;
         },
         (err) => {
@@ -226,14 +261,14 @@ export default {
           maximumAge: 1000, //como se fosse um cache, pra guardar a localização do GPS
         }
       );
-    }, 30000);
+    }, 300000);
   },
 };
 </script>
 
 <style>
 .mgl-map-wrapper {
-  height: 100vh;
+  height: 90vh;
 }
 body {
   margin: 0;
