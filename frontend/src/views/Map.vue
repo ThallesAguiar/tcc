@@ -30,9 +30,10 @@
         style="
           position: absolute;
           left: 10px;
-          z-index: 1;
+          z-index: 8;
           width: 100%;
           height: 90vh;
+          background-color: rgba(0, 0, 0, 0.2);
         "
       >
         <img
@@ -45,7 +46,7 @@
     </transition>
     <button
       type="button"
-      style="z-index: 1; width: 50px; position: absolute; top: 15%; right: 5px"
+      style="z-index: 7; width: 50px; position: absolute; top: 15%; right: 5px"
       class="btn btn-light"
       @click="activeSearchUsers()"
     >
@@ -64,8 +65,10 @@
         :trackUserLocation="true"
         :showUserLocation="false"
       />
+
+      <!-- Usuario logado -->
       <MglMarker :coordinates="myCoordinates">
-        <div slot="marker">
+        <div slot="marker" style="z-index: 5">
           <div>
             <img
               style="border-radius: 50%; width: 50px; height: 50px"
@@ -80,17 +83,19 @@
           </button>
         </MglPopup>
       </MglMarker>
+      <!-- ./Usuario logado -->
 
+      <!-- Markers -->
       <MglMarker
         v-for="marker in markers"
         :key="marker.id_user"
         :coordinates="[marker.lng, marker.lat]"
       >
-        <div slot="marker">
+        <div slot="marker" style="z-index: 1">
           <div>
             <img
               style="border-radius: 50%; width: 50px; height: 50px"
-              :src="user.avatar"
+              :src="marker.avatar"
             />
           </div>
         </div>
@@ -106,6 +111,7 @@
           </button>
         </MglPopup>
       </MglMarker>
+      <!-- ./Markers -->
     </MglMap>
   </div>
 </template>
@@ -201,16 +207,17 @@ export default {
         const usersForRange = await api.get(
           `search/index.php?id=${id_user}&lat=${lat}&lng=${lng}&range=${range}&unit=${unit}`
         );
+        console.log(usersForRange);
         this.markers = usersForRange.data.markers;
         this.unit = usersForRange.data.unit;
         this.range = usersForRange.data.range;
-
-        setTimeout(() => {
-          this.loading = false;
-        }, 2000);
       } catch (error) {
         console.log(error);
       }
+
+      setTimeout(() => {
+        this.loading = false;
+      }, 2000);
     },
 
     activeSearchUsers() {
