@@ -61,7 +61,6 @@
           type="password"
           class="form-control"
           placeholder="Password"
-          required
           v-model="user.pass"
         />
       </div>
@@ -151,7 +150,7 @@
         </label>
       </div>
 
-      <button type="submit" class="btn btn-primary">Atualizar</button>
+      <button type="button" class="btn btn-primary" @click="updateConfigPersonal()">Atualizar</button>
     </form>
     <form
       v-if="map"
@@ -186,7 +185,7 @@
         </select>
       </div>
 
-      <button type="submit" class="btn btn-primary">Atualizar</button>
+      <button type="button" class="btn btn-primary" @click="updateConfigMap()">Atualizar</button>
     </form>
   </div>
 </template>
@@ -225,10 +224,20 @@ export default {
       this.personal = true;
       this.map = false;
     },
+
     callMap() {
       this.personal = false;
       this.map = true;
     },
+
+    updateConfigMap(){
+      localStorage.setItem('range',this.range);
+      localStorage.setItem('unit', this.unit);
+    },
+
+    updateConfigPersonal(){
+      console.log(this.user)
+    }
   },
 
   created() {
