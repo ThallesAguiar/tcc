@@ -5,7 +5,7 @@ class SearchDAO
     /**
      * procura todos os usuarios proximos com maximo de alcance $range, em milhas ou kilometros.
      */
-    public static function calculateDistance($id_user, $lat, $lng, $range, $unit = 'kilometres', $conn)
+    public static function calculateDistance($id_user, $lat, $lng, $range, $unit, $conn)
     {
         if ($unit == 'kilometres') {
             $dist = 6371;
@@ -55,8 +55,9 @@ class SearchDAO
         }
 
         if (mysqli_num_rows($query) <= 0) {
-            header('HTTP/1.1 400 users not exists near to you!');
-            echo json_encode(["error" => true, "msg" => "Users not exists near to you!"]);
+            header('HTTP/1.1 200 OK');
+            ob_clean();
+            echo json_encode(["msg"=>"Users not exists near to you","unit" => $unit, "range" => $range, "markers" => []]);
             die();
         }
 
