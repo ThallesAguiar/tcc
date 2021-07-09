@@ -7,12 +7,18 @@
             Personal
           </button>
         </div>
-        <!-- <div class="col"><button class="btn btn-success">Address</button></div> -->
+        <div class="col">
+          <button class="btn btn-success" @click="callHistory()">
+            History
+          </button>
+        </div>
         <div class="col">
           <button class="btn btn-success" @click="callMap()">Map</button>
         </div>
       </div>
     </div>
+
+    <!-- DATA PERSONAL -->
     <form
       v-if="personal"
       style="
@@ -150,8 +156,49 @@
         </label>
       </div>
 
-      <button type="button" class="btn btn-primary" @click="updateConfigPersonal()">Atualizar</button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="updateConfigPersonal()"
+      >
+        Atualizar
+      </button>
     </form>
+
+    <!-- HISTORY -->
+    <form
+      v-if="history"
+      style="
+        background-color: rgba(0, 0, 0, 0.2);
+        margin-top: 10px;
+        border-radius: 10px;
+        padding: 10px;
+      "
+    >
+      <p
+        class="text-center text-white font-weight-bold"
+        style="font-size: 21px; text-shadow: 0px 0px 10px teal"
+      >
+        Write your history
+        <br />
+        <small>We love a good history</small>
+      </p>
+      <div class="form-group">
+        <textarea
+          class="form-control"
+          id="exampleFormControlTextarea1"
+          rows="10"
+          placeholder="Nos conte a sua história...."
+          v-model="userHistory"
+        ></textarea>
+      </div>
+
+      <button type="button" class="btn btn-primary" @click="updateHistory()">
+        Salvar
+      </button>
+    </form>
+
+    <!-- MAP -->
     <form
       v-if="map"
       style="
@@ -185,7 +232,9 @@
         </select>
       </div>
 
-      <button type="button" class="btn btn-primary" @click="updateConfigMap()">Atualizar</button>
+      <button type="button" class="btn btn-primary" @click="updateConfigMap()">
+        Atualizar
+      </button>
     </form>
   </div>
 </template>
@@ -197,6 +246,8 @@ export default {
     return {
       personal: true,
       map: false,
+      history: false,
+      userHistory: "",
       user: {
         name: "",
         lastname: "",
@@ -223,21 +274,33 @@ export default {
     callPersonal() {
       this.personal = true;
       this.map = false;
+      this.history = false;
     },
 
     callMap() {
       this.personal = false;
       this.map = true;
+      this.history = false;
     },
 
-    updateConfigMap(){
-      localStorage.setItem('range',this.range);
-      localStorage.setItem('unit', this.unit);
+    callHistory() {
+      this.personal = false;
+      this.map = false;
+      this.history = true;
     },
 
-    updateConfigPersonal(){
-      console.log(this.user)
-    }
+    updateConfigMap() {
+      localStorage.setItem("range", this.range);
+      localStorage.setItem("unit", this.unit);
+    },
+
+    updateConfigPersonal() {
+      console.log(this.user);
+    },
+
+    updateHistory() {
+      console.log(this.userHistory);
+    },
   },
 
   created() {
