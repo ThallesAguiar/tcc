@@ -214,6 +214,7 @@
       >
         Config map
       </p>
+
       <div class="form-group">
         <label for="formControlRange">Reach of users</label>
         <input
@@ -224,11 +225,20 @@
         />
         {{ range + " " + unit }}
       </div>
+
       <div class="form-group">
         <label for="inputUnit">Distance unit</label>
         <select id="inputUnit" class="form-control" v-model="unit">
           <option value="kilometres" selected>Kilometres (Km)</option>
           <option value="miles">Miles (Mi)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="inputUnit">Allow whatsapp viewing</label>
+        <select id="inputUnit" class="form-control" v-model="whats">
+          <option value="no" selected>Não</option>
+          <option value="yes">Sim</option>
         </select>
       </div>
 
@@ -248,6 +258,7 @@ export default {
       map: false,
       history: false,
       userHistory: "",
+      whats:"no",
       user: {
         name: "",
         lastname: "",
