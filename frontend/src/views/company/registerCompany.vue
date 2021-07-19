@@ -51,7 +51,7 @@
                       <button
                         type="button"
                         class="btn btn-secondary"
-                        @click="ImNotBusinessman(user.id_usuario)"
+                        @click="ImNotBusinessman(user.id_user)"
                       >
                         Oh no! i'm not a businessman.
                       </button>

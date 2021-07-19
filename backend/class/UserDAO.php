@@ -84,7 +84,13 @@ class UserDAO
      */
     public static function updateUserById(UserVO $user, $conn)
     {
-        $sql = "UPDATE `user` SET `name`='" . $user->getName() . "',`lastname`='" . $user->getLastname() . "',`email`='" . $user->getEmail() . "', `password`='" . $user->getPassword() . "',`birthday`='" . $user->getBirthday() . "',`gender`='" . $user->getGender() . "',`phone`='" . $user->getPhone() . "',`bio`='" . $user->getBio() . "',`avatar`='" . $user->getAvatar() . "' WHERE `id_user` = " . $user->getId_user() . "";
+        $pass = null;
+        if($user->getPassword() != null){
+            $p = md5($user->getPassword());
+            $pass = "password='$p',";
+        }
+        $sql = "UPDATE `user` SET `name`='" . $user->getName() . "',`lastname`='" . $user->getLastname() . "',`email`='" . $user->getEmail() . "', $pass `birthday`='" . $user->getBirthday() . "',`gender`='" . $user->getGender() . "',`phone`='" . $user->getPhone() . "',`businessman`='" . $user->getBusinessman() . "',`bio`='" . $user->getBio() . "',`avatar`='" . $user->getAvatar() . "' WHERE `id_user` = " . $user->getId_user() . "";
+        // var_dump($sql);die();
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {

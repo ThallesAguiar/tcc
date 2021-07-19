@@ -82,13 +82,9 @@
       <div class="row form-group">
         <div class="col-12">
           <label class="float-left"
-            >Phone {{ user.phone.dialCode }}{{ user.phone.DDD
-            }}{{ user.phone.number }}</label
+            >Phone {{ phone.dialCode }}{{ phone.DDD }}{{ phone.number }}</label
           >
-          <select
-            class="custom-select my-1 mr-sm-2"
-            v-model="user.phone.dialCode"
-          >
+          <select class="custom-select my-1 mr-sm-2" v-model="phone.dialCode">
             <option disabled selected>Select your code country</option>
             <option
               v-for="country in countries"
@@ -103,7 +99,7 @@
           <input
             type="tel"
             class="form-control"
-            v-model="user.phone.DDD"
+            v-model="phone.DDD"
             max="4"
             min="1"
             placeholder="DDD"
@@ -113,7 +109,7 @@
           <input
             type="tel"
             class="form-control"
-            v-model="user.phone.number"
+            v-model="phone.number"
             placeholder="Phone"
           />
         </div>
@@ -128,6 +124,18 @@
           required
         />
         <small>Your birthday is important for us</small>
+      </div>
+      <div class="form-group">
+        <label for="gender" class="float-left">Gender</label>
+        <select
+          class="custom-select my-1 mr-sm-2"
+          required
+          v-model="user.gender"
+        >
+          <option disabled selected hidden>Gender</option>
+          <option value="F">Female</option>
+          <option value="M">Male</option>
+        </select>
       </div>
       <div class="form-group">
         <textarea
@@ -251,6 +259,8 @@
 
 <script>
 import countries from "../data/countries.json";
+import api from "../service/api";
+
 export default {
   data() {
     return {
@@ -258,7 +268,12 @@ export default {
       map: false,
       history: false,
       userHistory: "",
-      whats:"no",
+      whats: "no",
+      phone: {
+        dialCode: "",
+        DDD: "",
+        number: "",
+      },
       user: {
         name: "",
         lastname: "",
@@ -267,11 +282,8 @@ export default {
         Confirmpass: "",
         businessman: false,
         birthday: new Date(),
-        phone: {
-          dialCode: "",
-          DDD: "",
-          number: "",
-        },
+        gender: "",
+        phone: "",
         bio: "",
       },
       unit: "",
@@ -305,8 +317,41 @@ export default {
       localStorage.setItem("unit", this.unit);
     },
 
-    updateConfigPersonal() {
-      console.log(this.user);
+    async updateConfigPersonal() {
+      
+      if (this.phone.dialCode && this.phone.DDD && this.phone.number) {
+        var phone = this.phone.dialCode + this.phone.DDD + this.phone.number;
+      } else {
+        var phone = this.user.phone;
+      }
+
+      try {
+        const user = await api.put("user/update.php", {
+          id_user: this.user.id_user,
+          name: this.user.name,
+          lastname: this.user.lastname,
+          email: this.user.email,
+          businessman: this.user.businessman,
+          password: this.user.pass,
+          birthday: this.user.birthday,
+          gender: this.user.gender,
+          phone,
+          bio: this.user.bio,
+        });
+        
+        localStorage.setItem("user", JSON.stringify(user.data.user));
+
+        if (
+          user.data.user.businessman == true ||
+          user.data.user.businessman == 1
+        ) {
+          this.$router.push("/registerCompany");
+        } else {
+          this.$router.push("/feed");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     updateHistory() {
