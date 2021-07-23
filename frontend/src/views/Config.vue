@@ -356,6 +356,34 @@ export default {
 
     updateHistory() {
       console.log(this.userHistory);
+
+      // try {
+      //   const user = await api.put("user/update.php", {
+      //     id_user: this.user.id_user,
+      //     name: this.user.name,
+      //     lastname: this.user.lastname,
+      //     email: this.user.email,
+      //     businessman: this.user.businessman,
+      //     password: this.user.pass,
+      //     birthday: this.user.birthday,
+      //     gender: this.user.gender,
+      //     phone,
+      //     bio: this.user.bio,
+      //   });
+        
+      //   localStorage.setItem("user", JSON.stringify(user.data.user));
+
+      //   if (
+      //     user.data.user.businessman == true ||
+      //     user.data.user.businessman == 1
+      //   ) {
+      //     this.$router.push("/registerCompany");
+      //   } else {
+      //     this.$router.push("/feed");
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      // }
     },
   },
 
