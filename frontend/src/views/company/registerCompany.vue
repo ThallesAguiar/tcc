@@ -185,7 +185,8 @@ export default {
       console.log(this.enterprise);
       try {
         const enterprise = await api.post("enterprise/store.php", {
-          company_name: this.enterprise.company_name,
+          // company_name: this.enterprise.company_name,
+          corporate_name: this.enterprise.company_name,
           fantasy_name: this.enterprise.fantasy_name,
           number_pj: this.enterprise.number_pj,
           number_pf: this.enterprise.number_pf,

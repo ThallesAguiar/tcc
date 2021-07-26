@@ -7,7 +7,7 @@
             Personal
           </button>
         </div>
-        <div class="col" v-if="userCompany.id_enterprise && user.businessman == 1">
+        <div class="col" v-if="userCompany.id_enterprise != null && user.businessman == 1">
           <button class="btn btn-success" @click="callCompany()">
             Company
           </button>
@@ -491,7 +491,7 @@ export default {
 
     this.userCompany = JSON.parse(localStorage.getItem("enterprise"))
       ? JSON.parse(localStorage.getItem("enterprise"))
-      : null;
+      : "";
 
     // Isto é para o input, pois ele não reconhece que 0 é falso e 1 é verdadeiro
     if (this.user.businessman == 0) {

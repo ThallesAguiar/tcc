@@ -126,7 +126,7 @@ class EnterpriseDAO
             die();
         }
 
-        $sql = "UPDATE `usuario` SET `businessman`= 0  WHERE `id_enterprise` = " . $id . "";
+        $sql = "UPDATE `user` SET `businessman`= 0  WHERE `id_enterprise` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -152,7 +152,7 @@ class EnterpriseDAO
             die();
         }
 
-        $sql = "UPDATE `usuario` SET `businessman`= 1  WHERE `id_enterprise` = " . $id . "";
+        $sql = "UPDATE `user` SET `businessman`= 1  WHERE `id_enterprise` = " . $id . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
