@@ -280,6 +280,10 @@ export default {
         );
         localStorage.setItem("token", user.data.token);
         localStorage.setItem("user", JSON.stringify(user.data.user));
+        const history = await axios.get(`http://localhost/mateship/backend/controller/history/show.php?id=${user.data.user.id_user}`);
+        if(history.data.history.id_history){
+          localStorage.setItem("history", history.data.history.description);
+        }
         if (
           user.data.user.empresario == 1 &&
           user.data.user.id_empresa == null
