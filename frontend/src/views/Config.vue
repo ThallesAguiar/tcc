@@ -7,6 +7,11 @@
             Personal
           </button>
         </div>
+        <div class="col" v-if="userCompany.id_enterprise && user.businessman == 1">
+          <button class="btn btn-success" @click="callCompany()">
+            Company
+          </button>
+        </div>
         <div class="col">
           <button class="btn btn-success" @click="callHistory()">
             History
@@ -254,6 +259,90 @@
         Atualizar
       </button>
     </form>
+
+    <!-- Company -->
+    <form
+      v-if="company"
+      style="
+        background-color: rgba(0, 0, 0, 0.2);
+        margin-top: 10px;
+        border-radius: 10px;
+        padding: 10px;
+      "
+    >
+      <p
+          class="text-center text-white font-weight-bold"
+          style="font-size: 21px; text-shadow: 0px 0px 10px teal"
+        >
+          Mateship
+        </p>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Company name"
+            required
+            v-model="enterprise.company_name"
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Fantasy name"
+            v-model="enterprise.fantasy_name"
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="Company numbering"
+            v-model="enterprise.number_pj"
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="Personal numbering"
+            required
+            v-model="enterprise.number_pf"
+          />
+        </div>
+        <div class="form-group">
+          <label
+            class="float-left text-white font-weight-bold"
+            style="text-shadow: 1px 1px 5px black"
+            >Type of enterprise</label
+          >
+          <select
+            class="custom-select my-1 mr-sm-2"
+            required
+            v-model="enterprise.type_company"
+          >
+            <option disabled selected hidden>Tipo de empreendimento</option>
+            <option value="internet">Internet</option>
+            <option value="fixed establishment">Fixed establishment</option>
+            <option value="door to door">Door to door</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea
+            class="form-control"
+            rows="3"
+            placeholder="Add a description"
+            v-model="enterprise.description"
+          ></textarea>
+        </div>
+        <button
+          type="button"
+          @click="updateCompany()"
+          class="btn btn-block btn-success"
+        >
+          Atualizar
+        </button>
+    </form>
   </div>
 </template>
 
@@ -267,7 +356,9 @@ export default {
       personal: true,
       map: false,
       history: false,
+      company: false,
       userHistory: "",
+      userCompany: "",
       whats: "no",
       phone: {
         dialCode: "",
@@ -298,18 +389,28 @@ export default {
       this.personal = true;
       this.map = false;
       this.history = false;
+      this.company = false;
     },
 
     callMap() {
       this.personal = false;
       this.map = true;
       this.history = false;
+      this.company = false;
     },
 
     callHistory() {
       this.personal = false;
       this.map = false;
       this.history = true;
+      this.company = false;
+    },
+
+    callCompany() {
+      this.personal = false;
+      this.map = false;
+      this.history = false;
+      this.company = true;
     },
 
     updateConfigMap() {
@@ -318,7 +419,6 @@ export default {
     },
 
     async updateConfigPersonal() {
-      
       if (this.phone.dialCode && this.phone.DDD && this.phone.number) {
         var phone = this.phone.dialCode + this.phone.DDD + this.phone.number;
       } else {
@@ -338,7 +438,7 @@ export default {
           phone,
           bio: this.user.bio,
         });
-        
+
         localStorage.setItem("user", JSON.stringify(user.data.user));
 
         if (
@@ -354,41 +454,44 @@ export default {
       }
     },
 
-    updateHistory() {
-      console.log(this.userHistory);
+    updateCompany(){
+      console.log(this.userCompany);
+    },
 
-      // try {
-      //   const user = await api.put("user/update.php", {
-      //     id_user: this.user.id_user,
-      //     name: this.user.name,
-      //     lastname: this.user.lastname,
-      //     email: this.user.email,
-      //     businessman: this.user.businessman,
-      //     password: this.user.pass,
-      //     birthday: this.user.birthday,
-      //     gender: this.user.gender,
-      //     phone,
-      //     bio: this.user.bio,
-      //   });
-        
-      //   localStorage.setItem("user", JSON.stringify(user.data.user));
+    async updateHistory() {
+      try {
+        const history = await api.get(
+          `history/show.php?id=${this.user.id_user}`
+        );
 
-      //   if (
-      //     user.data.user.businessman == true ||
-      //     user.data.user.businessman == 1
-      //   ) {
-      //     this.$router.push("/registerCompany");
-      //   } else {
-      //     this.$router.push("/feed");
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      // }
+        if (history.data.history.id_history) {
+          await api.put("history/update.php", {
+            id_user: this.user.id_user,
+            description: this.userHistory,
+          });
+        } else {
+          await api.post("history/store.php", {
+            id_user: this.user.id_user,
+            description: this.userHistory,
+          });
+        }
+        localStorage.setItem("history", this.userHistory);
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 
   created() {
     this.user = JSON.parse(localStorage.getItem("user"));
+
+    this.userHistory = localStorage.getItem("history")
+      ? localStorage.getItem("history")
+      : "";
+
+    this.userCompany = JSON.parse(localStorage.getItem("enterprise"))
+      ? JSON.parse(localStorage.getItem("enterprise"))
+      : null;
 
     // Isto é para o input, pois ele não reconhece que 0 é falso e 1 é verdadeiro
     if (this.user.businessman == 0) {
