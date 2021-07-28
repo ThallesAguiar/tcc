@@ -66,12 +66,6 @@ class HistoryDAO{
             echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
             die();
         }
-        // if (mysqli_num_rows($query) <= 0) {
-        //     header('HTTP/1.1 400 history not exist!');
-        //     ob_clean();
-        //     echo json_encode(["error" => true, "msg" => "User not exist!"]);
-        //     die();
-        // }
 
         return mysqli_fetch_assoc($query);
     }

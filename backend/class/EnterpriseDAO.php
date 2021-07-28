@@ -38,6 +38,7 @@ class EnterpriseDAO
     public static function updateEnterpriseById(EnterpriseVO $enterpriseVO, $conn)
     {
         $sql = "UPDATE `enterprise` SET `corporate_name`='" . $enterpriseVO->getCorporate_name() . "',`fantasy_name`='" . $enterpriseVO->getFantasy_name() . "',`numbering_company`='" . $enterpriseVO->getNumbering_company() . "',`numbering_personal`='" . $enterpriseVO->getNumbering_personal() . "',`description`='" . $enterpriseVO->getDescription() . "',`enterprise_type`='" . $enterpriseVO->getEnterprise_type() . "' WHERE `id_enterprise` = " . $enterpriseVO->getId_enterprise() . "";
+        // var_dump($sql);die();
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -60,12 +61,6 @@ class EnterpriseDAO
             header('HTTP/1.1 400 error in DB');
             ob_clean();
             echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
-            die();
-        }
-        if (mysqli_num_rows($query) <= 0) {
-            header('HTTP/1.1 400 enterprise not exist!');
-            ob_clean();
-            echo json_encode(["error" => true, "msg" => "Enterprise not exist!"]);
             die();
         }
 
