@@ -42,25 +42,24 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"
-              >Home <span class="sr-only">(Página atual)</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Destaques</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Preços</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Desativado</a>
-          </li>
+          <router-link
+            v-for="menu in menus"
+            :key="menu.name"
+            :to="menu.route"
+            class="nav-link"
+            type="button"
+          >
+            <li class="nav-item">
+              <span :class="menu.icon"></span>
+              <br />
+              {{ menu.name }}
+            </li>
+          </router-link>
         </ul>
       </div>
     </nav>
 
-      <router-view></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -71,7 +70,7 @@ export default {
     dropdownMenu: false,
     menus: [
       // { name: "feed", route: "/feed", icon: "fa fa-id-badge" },
-      {name:"home", route:"/feed", icon:"fa fa-home"},
+      { name: "home", route: "/feed", icon: "fa fa-home" },
       { name: "map", route: "/map", icon: "fa fa-globe-americas" },
       { name: "config", route: "/config", icon: "fa fa-cog" },
     ],
@@ -80,7 +79,7 @@ export default {
 </script>
 
 <style>
-body{
+body {
   background-color: #efef;
 }
 </style>

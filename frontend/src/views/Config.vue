@@ -7,7 +7,10 @@
             Personal
           </button>
         </div>
-        <div class="col" v-if="userCompany.id_enterprise != null && user.businessman == 1">
+        <div
+          class="col"
+          v-if="enterprise.id_enterprise != null && user.businessman == 1"
+        >
           <button class="btn btn-success" @click="callCompany()">
             Company
           </button>
@@ -271,77 +274,77 @@
       "
     >
       <p
-          class="text-center text-white font-weight-bold"
-          style="font-size: 21px; text-shadow: 0px 0px 10px teal"
+        class="text-center text-white font-weight-bold"
+        style="font-size: 21px; text-shadow: 0px 0px 10px teal"
+      >
+        Mateship
+      </p>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Company name"
+          required
+          v-model="enterprise.corporate_name"
+        />
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Fantasy name"
+          v-model="enterprise.fantasy_name"
+        />
+      </div>
+      <div class="form-group">
+        <input
+          type="tel"
+          class="form-control"
+          placeholder="Company numbering"
+          v-model="enterprise.numbering_company"
+        />
+      </div>
+      <div class="form-group">
+        <input
+          type="tel"
+          class="form-control"
+          placeholder="Personal numbering"
+          required
+          v-model="enterprise.numbering_personal"
+        />
+      </div>
+      <div class="form-group">
+        <label
+          class="float-left text-white font-weight-bold"
+          style="text-shadow: 1px 1px 5px black"
+          >Type of enterprise</label
         >
-          Mateship
-        </p>
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Company name"
-            required
-            v-model="enterprise.company_name"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Fantasy name"
-            v-model="enterprise.fantasy_name"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="tel"
-            class="form-control"
-            placeholder="Company numbering"
-            v-model="enterprise.number_pj"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="tel"
-            class="form-control"
-            placeholder="Personal numbering"
-            required
-            v-model="enterprise.number_pf"
-          />
-        </div>
-        <div class="form-group">
-          <label
-            class="float-left text-white font-weight-bold"
-            style="text-shadow: 1px 1px 5px black"
-            >Type of enterprise</label
-          >
-          <select
-            class="custom-select my-1 mr-sm-2"
-            required
-            v-model="enterprise.type_company"
-          >
-            <option disabled selected hidden>Tipo de empreendimento</option>
-            <option value="internet">Internet</option>
-            <option value="fixed establishment">Fixed establishment</option>
-            <option value="door to door">Door to door</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <textarea
-            class="form-control"
-            rows="3"
-            placeholder="Add a description"
-            v-model="enterprise.description"
-          ></textarea>
-        </div>
-        <button
-          type="button"
-          @click="updateCompany()"
-          class="btn btn-block btn-success"
+        <select
+          class="custom-select my-1 mr-sm-2"
+          required
+          v-model="enterprise.enterprise_type"
         >
-          Atualizar
-        </button>
+          <option disabled selected hidden>Tipo de empreendimento</option>
+          <option value="internet">Internet</option>
+          <option value="fixed establishment">Fixed establishment</option>
+          <option value="door to door">Door to door</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <textarea
+          class="form-control"
+          rows="3"
+          placeholder="Add a description"
+          v-model="enterprise.description"
+        ></textarea>
+      </div>
+      <button
+        type="button"
+        @click="updateCompany()"
+        class="btn btn-block btn-success"
+      >
+        Atualizar
+      </button>
     </form>
   </div>
 </template>
@@ -376,6 +379,14 @@ export default {
         gender: "",
         phone: "",
         bio: "",
+      },
+      enterprise: {
+        corporate_name: "",
+        fantasy_name: "",
+        numbering_company: "",
+        numbering_personal: "",
+        description: "",
+        enterprise_type: "",
       },
       unit: "",
       range: "",
@@ -441,10 +452,7 @@ export default {
 
         localStorage.setItem("user", JSON.stringify(user.data.user));
 
-        if (
-          user.data.user.businessman == true ||
-          user.data.user.businessman == 1
-        ) {
+        if ((user.data.user.businessman == true || user.data.user.businessman == 1) && user.data.user.id_enterprise == null ) {
           this.$router.push("/registerCompany");
         } else {
           this.$router.push("/feed");
@@ -454,8 +462,25 @@ export default {
       }
     },
 
-    updateCompany(){
-      console.log(this.userCompany);
+    async updateCompany() {
+      console.log(this.enterprise);
+      try {
+        const enterprise = await api.put(`enterprise/update.php`, {
+          id_enterprise: this.enterprise.id_enterprise,
+          corporate_name: this.enterprise.corporate_name,
+          fantasy_name: this.enterprise.fantasy_name,
+          numbering_company: this.enterprise.numbering_company,
+          numbering_personal: this.enterprise.numbering_personal,
+          description: this.enterprise.description,
+          enterprise_type: this.enterprise.enterprise_type,
+        });
+
+        localStorage.setItem("enterprise", JSON.stringify(enterprise.data));
+
+        this.$router.push("/feed");
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async updateHistory() {
@@ -489,7 +514,7 @@ export default {
       ? localStorage.getItem("history")
       : "";
 
-    this.userCompany = JSON.parse(localStorage.getItem("enterprise"))
+    this.enterprise = JSON.parse(localStorage.getItem("enterprise"))
       ? JSON.parse(localStorage.getItem("enterprise"))
       : "";
 
