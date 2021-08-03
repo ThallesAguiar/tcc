@@ -57,13 +57,42 @@
             </div>
           </form>
 
-          <form v-else>
+          <form v-else enctype="multipart/form-data">
             <p
               class="text-center text-white font-weight-bold"
               style="font-size: 21px; text-shadow: 0px 0px 10px teal"
             >
               Mateship
             </p>
+            <div class="row">
+              <div class="col"></div>
+
+              <div v-if="previewImage" class="imagePreviewWrapper">
+                <img
+                  :src="previewImage"
+                  @click="overlay = !overlay"
+                  width="150px"
+                  height="150px"
+                  style="border-radius: 50%"
+                />
+              </div>
+              <div v-else class="imagePreviewWrapper">
+                <img
+                  src="https://image.winudf.com/v2/image1/YnIuY29tLmFwcHN3cy5lcnZhbWF0ZV9zY3JlZW5fMV8xNTYwNjk2NzMxXzAzNw/screen-1.jpg?fakeurl=1&type=.jpg"
+                  @click="selectImage"
+                  width="150px"
+                  style="border-radius: 50%"
+                />
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="form-group">
+              <input type="file"
+                  @change="onFileSelected"
+                  ref="fileInput"
+                  @input="pickFile" 
+                  class="form-control"/>
+            </div>
             <div class="form-group">
               <input
                 type="text"
@@ -225,7 +254,7 @@ import axios from "axios";
 
 export default {
   data: () => ({
-    isLogin: true,
+    isLogin: false,
     countries: countries,
     user: {
       name: "",
@@ -246,12 +275,38 @@ export default {
         lng: "",
       },
     },
+    image:
+      "https://image.winudf.com/v2/image1/YnIuY29tLmFwcHN3cy5lcnZhbWF0ZV9zY3JlZW5fMV8xNTYwNjk2NzMxXzAzNw/screen-1.jpg?fakeurl=1&type=.jpg",
+    previewImage: null,
+    selectedFile: null,
+    overlay: false,
   }),
   created() {
     this.getCoordinates();
   },
 
   methods: {
+    /** IMAGEM/FILE*/
+    /**Quando inserir a imagem, o this. recebe o valor da imagem */
+    onFileSelected(event) {
+      this.selectedFile = event.target.files[0];
+    },
+    selectImage() {
+      this.$refs.fileInput.click();
+    },
+    pickFile() {
+      let input = this.$refs.fileInput;
+      let file = input.files;
+      if (file && file[0]) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImage = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        this.$emit("input", file[0]);
+      }
+    } /** ./IMAGEM/FILE*/,
+
     getCoordinates() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -280,14 +335,18 @@ export default {
         );
         localStorage.setItem("token", user.data.token);
         localStorage.setItem("user", JSON.stringify(user.data.user));
-        
-        const history = await axios.get(`http://localhost/mateship/backend/controller/history/show.php?id=${user.data.user.id_user}`);
-        const enterprise = await axios.get(`http://localhost/mateship/backend/controller/enterprise/show.php?id=${user.data.user.id_enterprise}`);
-        
-        if(history.data.history){
+
+        const history = await axios.get(
+          `http://localhost/mateship/backend/controller/history/show.php?id=${user.data.user.id_user}`
+        );
+        const enterprise = await axios.get(
+          `http://localhost/mateship/backend/controller/enterprise/show.php?id=${user.data.user.id_enterprise}`
+        );
+
+        if (history.data.history) {
           localStorage.setItem("history", history.data.history.description);
         }
-        if(enterprise.data){
+        if (enterprise.data) {
           localStorage.setItem("enterprise", JSON.stringify(enterprise.data));
         }
 
@@ -422,5 +481,28 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* avatar */
+.imagePreviewWrapper {
+  display: block;
+  cursor: pointer;
+  margin: 0 auto 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.imagePreviewClicked {
+  width: calc(100% - 20px);
+  height: calc(100% - 23px - 65px - 47px - 16px);
+  min-width: 300px;
+  max-width: 355px;
+  display: block;
+  margin: 0 auto 30px;
+  background-size: cover;
+  background-position: center center;
+}
+#imagePerfil {
+  width: 80%;
+  border-radius: 1%;
+  background-size: cover;
 }
 </style>
