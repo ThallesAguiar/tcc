@@ -87,11 +87,13 @@
               <div class="col"></div>
             </div>
             <div class="form-group">
-              <input type="file"
-                  @change="onFileSelected"
-                  ref="fileInput"
-                  @input="pickFile" 
-                  class="form-control"/>
+              <input
+                type="file"
+                @change="onFileSelected"
+                ref="fileInput"
+                @input="pickFile"
+                class="form-control"
+              />
             </div>
             <div class="form-group">
               <input
@@ -254,7 +256,7 @@ import axios from "axios";
 
 export default {
   data: () => ({
-    isLogin: false,
+    isLogin: true,
     countries: countries,
     user: {
       name: "",
@@ -270,6 +272,7 @@ export default {
         number: "",
       },
       bio: "",
+      avatar: "",
       coordinates: {
         lat: "",
         lng: "",
@@ -364,6 +367,20 @@ export default {
     },
 
     async singin() {
+      if (this.selectedFile) {
+        const formData = new FormData(); /**Este formData serve para validar o envio de arquivos. */
+        formData.append("file", this.selectedFile);
+        const result = await axios.post(
+          `http://localhost/mateship/backend/controller/file/store.php`,
+          formData
+        );
+        // console.log(result.data);
+        this.user.avatar = result.data;
+      } else {
+        this.user.avatar =
+          "https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png";
+      }
+
       try {
         const user = await axios.post(
           "http://localhost/mateship/backend/controller/user/store.php",
@@ -380,9 +397,9 @@ export default {
               this.user.phone.DDD +
               this.user.phone.number,
             bio: this.user.bio,
+            avatar: this.user.avatar,
             lat: this.user.coordinates.lat,
             lng: this.user.coordinates.lng,
-            // avatar:https://gartic.com.br/imgs/mural/ra/raqueelita/chimarrao.png,
           }
         );
         this.isLogin = true;

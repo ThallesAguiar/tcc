@@ -42,6 +42,37 @@
       >
         Personal data
       </p>
+      <div class="row">
+        <div class="col"></div>
+
+        <div v-if="previewImage" class="imagePreviewWrapper">
+          <img
+            :src="previewImage"
+            @click="overlay = !overlay"
+            width="150px"
+            height="150px"
+            style="border-radius: 50%"
+          />
+        </div>
+        <div v-else class="imagePreviewWrapper">
+          <img
+            :src="user.avatar"
+            @click="selectImage"
+            width="150px"
+            style="border-radius: 50%"
+          />
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="form-group">
+        <input
+          type="file"
+          @change="onFileSelected"
+          ref="fileInput"
+          @input="pickFile"
+          class="form-control"
+        />
+      </div>
       <div class="form-group">
         <input
           type="text"
@@ -379,6 +410,7 @@ export default {
         gender: "",
         phone: "",
         bio: "",
+        avatar: "",
       },
       enterprise: {
         corporate_name: "",
@@ -392,10 +424,36 @@ export default {
       range: "",
       address: {},
       countries: countries,
+      image:
+        "https://image.winudf.com/v2/image1/YnIuY29tLmFwcHN3cy5lcnZhbWF0ZV9zY3JlZW5fMV8xNTYwNjk2NzMxXzAzNw/screen-1.jpg?fakeurl=1&type=.jpg",
+      previewImage: null,
+      selectedFile: null,
+      overlay: false,
     };
   },
 
   methods: {
+    /** IMAGEM/FILE*/
+    /**Quando inserir a imagem, o this. recebe o valor da imagem */
+    onFileSelected(event) {
+      this.selectedFile = event.target.files[0];
+    },
+    selectImage() {
+      this.$refs.fileInput.click();
+    },
+    pickFile() {
+      let input = this.$refs.fileInput;
+      let file = input.files;
+      if (file && file[0]) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          this.previewImage = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        this.$emit("input", file[0]);
+      }
+    } /** ./IMAGEM/FILE*/,
+
     callPersonal() {
       this.personal = true;
       this.map = false;
@@ -430,6 +488,14 @@ export default {
     },
 
     async updateConfigPersonal() {
+      if (this.selectedFile) {
+        const formData = new FormData(); /**Este formData serve para validar o envio de arquivos. */
+        formData.append("file", this.selectedFile);
+        const result = await api.post(`file/store.php`, formData);
+        // console.log(result.data);
+        this.user.avatar = result.data;
+      }
+
       if (this.phone.dialCode && this.phone.DDD && this.phone.number) {
         var phone = this.phone.dialCode + this.phone.DDD + this.phone.number;
       } else {
@@ -447,12 +513,17 @@ export default {
           birthday: this.user.birthday,
           gender: this.user.gender,
           phone,
+          avatar: this.user.avatar,
           bio: this.user.bio,
         });
 
         localStorage.setItem("user", JSON.stringify(user.data.user));
 
-        if ((user.data.user.businessman == true || user.data.user.businessman == 1) && user.data.user.id_enterprise == null ) {
+        if (
+          (user.data.user.businessman == true ||
+            user.data.user.businessman == 1) &&
+          user.data.user.id_enterprise == null
+        ) {
           this.$router.push("/registerCompany");
         } else {
           this.$router.push("/feed");
@@ -616,5 +687,28 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* avatar */
+.imagePreviewWrapper {
+  display: block;
+  cursor: pointer;
+  margin: 0 auto 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.imagePreviewClicked {
+  width: calc(100% - 20px);
+  height: calc(100% - 23px - 65px - 47px - 16px);
+  min-width: 300px;
+  max-width: 355px;
+  display: block;
+  margin: 0 auto 30px;
+  background-size: cover;
+  background-position: center center;
+}
+#imagePerfil {
+  width: 80%;
+  border-radius: 1%;
+  background-size: cover;
 }
 </style>

@@ -11,8 +11,8 @@ class UserDAO
         date_default_timezone_set('America/Sao_Paulo');
         $now = date('Y-m-d H:i:s');
 
-        $sql = "INSERT INTO `user`(`name`, `lastname`, `email`, `businessman`, `password`, `birthday`, `gender`, `phone`, `bio`, `coordinates`, `lat`,`lng`,`created`) 
-        VALUES ('" . $userVO->getName() . "','" . $userVO->getLastname() . "','" . $userVO->getEmail() . "','" . $userVO->getBusinessman() . "','" . md5($userVO->getPassword()) . "','" . $userVO->getBirthday() . "','" . $userVO->getGender() . "','" . $userVO->getPhone() . "','" . $userVO->getBio() . "',ST_GeomFromText('POINT(" . $userVO->getCoordinates() . ")'),'" . $userVO->getLat() . "','" . $userVO->getLng() . "', '$now')";
+        $sql = "INSERT INTO `user`(`name`, `lastname`, `email`, `businessman`, `password`, `birthday`, `gender`, `phone`, `bio`,`avatar`, `coordinates`, `lat`,`lng`,`created`) 
+        VALUES ('" . $userVO->getName() . "','" . $userVO->getLastname() . "','" . $userVO->getEmail() . "','" . $userVO->getBusinessman() . "','" . md5($userVO->getPassword()) . "','" . $userVO->getBirthday() . "','" . $userVO->getGender() . "','" . $userVO->getPhone() . "','" . $userVO->getBio() . "','" . $userVO->getAvatar() . "',ST_GeomFromText('POINT(" . $userVO->getCoordinates() . ")'),'" . $userVO->getLat() . "','" . $userVO->getLng() . "', '$now')";
 
         mysqli_query($conn, $sql);
 

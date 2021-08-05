@@ -1,3 +1,6 @@
 <?php
 
 define('SECRET','aab9442089e5095741319b96fe2abc46');
+
+define("ACCESS_KEY", "AKIAW2VLU4AY56C7NEGA");
+define("SECRET_KEY", "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");
