@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'a149d0f5e11753c0b84e185eb2e61616dd8f2cfa',
+    'reference' => 'ff9df380bbd6be8a08e1cdffcc722fdae6223dec',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,16 +18,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'a149d0f5e11753c0b84e185eb2e61616dd8f2cfa',
+      'reference' => 'ff9df380bbd6be8a08e1cdffcc722fdae6223dec',
     ),
     'aws/aws-sdk-php' => 
     array (
-      'pretty_version' => '3.187.2',
-      'version' => '3.187.2.0',
+      'pretty_version' => '3.188.0',
+      'version' => '3.188.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0ec4ae120cfae758efa3c283dc56eb20602f094c',
+      'reference' => '613cea76913b632d75ed2f6ed5afb11c53762a6e',
     ),
     'firebase/php-jwt' => 
     array (
