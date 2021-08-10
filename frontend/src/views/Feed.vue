@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import pensador from 'pensador-api';
+
 export default {
   data: () => ({
     hat: true
@@ -42,6 +44,11 @@ export default {
       return JSON.parse(localStorage.getItem("user"));
     },
   },
+
+  async created(){
+    const array = await pensador({ term: "Elon Musk", max: 5 })
+    console.log(array)
+  }
 };
 </script>
 
