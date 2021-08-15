@@ -30,6 +30,11 @@ const routes = [
         component: () => import("../views/Map.vue"),
       },
       {
+        path: "/friend/:id",
+        name: "Friend",
+        component: () => import("../views/Friend.vue"),
+      },
+      {
         path: "/config",
         name: "Config",
         component: () => import("../views/Config.vue"),

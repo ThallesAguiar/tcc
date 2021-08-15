@@ -58,8 +58,8 @@
       :accessToken="accessToken"
       :mapStyle="mapStyle"
       :center="myCoordinates"
-      hash
     >
+      <!-- hash -->
       <MglGeolocateControl
         position="top-right"
         :trackUserLocation="true"
@@ -188,7 +188,7 @@ export default {
     },
 
     visitProfile(id) {
-      console.log("visitar perfil" + id);
+      this.$router.push(`/friend/${id}`)
     },
 
     async searchUsers() {
