@@ -12,7 +12,11 @@
                   width="300"
                   height="300"
                   alt="avatar"
-                  style="background-color: blue; border-radius:50%; box-shadow: 1px 1px 3px black;"
+                  style="
+                    background-color: blue;
+                    border-radius: 50%;
+                    box-shadow: 1px 1px 3px black;
+                  "
                 />
               </span>
 
@@ -58,7 +62,7 @@
                   <div class="profile-info-name">Age</div>
 
                   <div class="profile-info-value">
-                    <span>38</span>
+                    <span>{{ age }}</span>
                   </div>
                 </div>
 
@@ -66,7 +70,7 @@
                   <div class="profile-info-name">Joined</div>
 
                   <div class="profile-info-value">
-                    <span>2010/06/20</span>
+                    <span>{{joined}}</span>
                   </div>
                 </div>
 
@@ -93,7 +97,13 @@
                 <div class="profile-info-row">
                   <div class="profile-info-name">
                     <i
-                      class="middle ace-icon fa fa-facebook-square bigger-150 blue"
+                      class="
+                        middle
+                        ace-icon
+                        fa fa-facebook-square
+                        bigger-150
+                        blue
+                      "
                     ></i>
                   </div>
 
@@ -105,7 +115,13 @@
                 <div class="profile-info-row">
                   <div class="profile-info-name">
                     <i
-                      class="middle ace-icon fa fa-twitter-square bigger-150 light-blue"
+                      class="
+                        middle
+                        ace-icon
+                        fa fa-twitter-square
+                        bigger-150
+                        light-blue
+                      "
                     ></i>
                   </div>
 
@@ -146,9 +162,7 @@
                       porta felis euismod and nullam quis risus eget urna mollis
                       ornare.
                     </p>
-                    <p>
-                      Thanks for visiting my profile.
-                    </p>
+                    <p>Thanks for visiting my profile.</p>
                   </div>
                 </div>
               </div>
@@ -170,35 +184,50 @@ export default {
 
   computed: {
     nameComplete() {
-        console.log(new Date(this.user.birthday))
       return this.user.name + " " + this.user.lastname;
     },
+
     age() {
-      const birthday = new Date(this.user.birthday);
+      var birthday = this.user.birthday;
 
-      var d = new Date(),
-        ano_atual = d.getFullYear(),
-        mes_atual = d.getMonth() + 1,
-        dia_atual = d.getDate(),
-        ano_aniversario = +ano_aniversario,
-        mes_aniversario = +mes_aniversario,
-        dia_aniversario = +dia_aniversario,
-        quantos_anos = ano_atual - ano_aniversario;
+      var currentDate = new Date();
+      var currentYear = currentDate.getFullYear();
+      var yearMounthDay = birthday.split("-");
+      var day = yearMounthDay[2];
+      var mounth = yearMounthDay[1];
+      var year = yearMounthDay[0];
 
-      if (
-        mes_atual < mes_aniversario ||
-        (mes_atual == mes_aniversario && dia_atual < dia_aniversario)
-      ) {
-        quantos_anos--;
+      var age = currentYear - year;
+      var currentMounth = currentDate.getMonth() + 1;
+      //Se mes atual for menor que o nascimento, nao fez aniversario ainda;
+      if (currentMounth < mounth) {
+        age--;
+      } else {
+        //Se estiver no mes do nascimento, verificar o dia
+        if (currentMounth == mounth) {
+          if (new Date().getDate() < day) {
+            //Se a data atual for menor que o dia de nascimento ele ainda nao fez aniversario
+            age--;
+          }
+        }
       }
-
-      return quantos_anos < 0 ? 0 : quantos_anos;
+      return age;
     },
+
+    joined(){
+      var created = this.user.created.split(' ');
+
+      var time = created[1];
+      var date = created[0];
+      
+      return date;
+    }
   },
   async created() {
     const id = this.$route.params.id;
 
     const user = await api.get(`user/show.php?id=${id}`);
+    console.log(user)
     this.user = user.data.user;
 
     console.log(this.user);

@@ -60,7 +60,7 @@ class UserDAO
      */
     public static function getUserById($id, $conn)
     {
-        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng  FROM `user` WHERE id_user = $id";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng, created  FROM `user` WHERE id_user = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
