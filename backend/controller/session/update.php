@@ -20,8 +20,16 @@ if (!$userVerified = $auth->verifyAuth($token)) {
 // $id_user = 14;
 $id_user = $_GET['id'];
 
+if (empty($id_user) || $id_user == null) {
+    header('HTTP/1.1 200 OK');
+    ob_clean();
+    echo json_encode(false);
+    die();
+}
+
 $status = SessionDAO::online($id_user, $conn);
 
 header('HTTP/1.1 200 OK');
 ob_clean();
 echo json_encode(true);
+die();
