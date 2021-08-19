@@ -72,4 +72,39 @@ class SessionDAO
 
         return $decoded;
     }
+
+    /**
+     * Verifica o status online de um usuário
+     */
+    public static function verifyStatusOnline($id, $conn)
+    {
+        $sql = "SELECT `end` FROM login WHERE user_id = $id";
+        $query = mysqli_query($conn, $sql);
+
+        return mysqli_fetch_assoc($query);
+        
+    }
+
+    /**
+     * Monitora o online do usuario
+     */
+    public static function online($id, $conn)
+    {
+        $sql = "SELECT `end` FROM login WHERE user_id = $id";
+        $query = mysqli_query($conn, $sql);
+
+        $login = mysqli_fetch_assoc($query);
+        date_default_timezone_set('America/Sao_Paulo');
+        $data['atual'] = date('Y-m-d H:i:s');
+        $data['online'] = strtotime($data['atual'] . "-1 minutes");
+        $data['online'] = date('Y-m-d H:i:s', $data['online']);
+
+        if (isset($login) && !empty($login)) {
+            $sql_up = "UPDATE login SET `end`='" . $data['atual'] . "' WHERE user_id = $id";
+            mysqli_query($conn, $sql_up);
+        } else {
+            $sql_crt = "INSERT INTO login (`user_id`,`start`,`end`) VALUES ('" . $id . "','" . $data['atual'] . "', '" . $data['atual'] . "')";
+            mysqli_query($conn, $sql_crt);
+        }
+    }
 }
