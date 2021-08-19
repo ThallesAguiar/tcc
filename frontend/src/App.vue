@@ -1,28 +1,23 @@
 <template>
   <div id="app">
     <transition name="slide" mode="out-in">
-    <router-view />
+      <router-view />
     </transition>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import api from "./service/api";
 export default {
-  // created() {
-  //   axios.interceptors.request.use(
-  //     async (config) => {
-  //       const token = await localStorage.getItem("token");
-  //       config.headers.Authorization = `${token}`;
-        
-  //       console.log(config);
-  //       return config;
-  //     },
-  //     (error) => {
-  //       return Promise.reject(error);
-  //     }
-  //   );
-  // },
+  created() {
+    setInterval(async function () {
+      const { id_user } = localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user"))
+        : "";
+      await api.put(`session/update.php?id=${id_user}`);
+      console.log("ta on");
+    }, 100000);
+  },
 };
 </script>
 

@@ -49,11 +49,20 @@ if ($last_login >= $online) {
         $seconds =  $since_start->s . ' seconds';
 
         if ($since_start->h == 0) {
+
+            if ($since_start->i == 0) {
+                header('HTTP/1.1 200 OK');
+                ob_clean();
+                echo json_encode(['online' => false, 'time' => '1 minute']);
+                die();
+            }
+
             header('HTTP/1.1 200 OK');
             ob_clean();
             echo json_encode(['online' => false, 'time' => $minutes]);
             die();
         } elseif ($since_start->h == 1) {
+
             header('HTTP/1.1 200 OK');
             ob_clean();
             echo json_encode(['online' => false, 'time' => $since_start->h . ' hour']); //singular

@@ -33,9 +33,13 @@
               <h4 class="blue">
                 <span class="middle">{{ nameComplete }}</span>
 
-                <span class="label label-purple arrowed-in-right">
-                  <i class="ace-icon fa fa-circle smaller-80 align-middle"></i>
+                <span v-if="online.online == true" class="label label-purple arrowed-in-right">
+                  <i class="ace-icon fa fa-circle smaller-80 align-middle" style="color: #90ee90"></i>
                   online
+                </span>
+                <span v-else class="label label-purple arrowed-in-right">
+                  <i class="ace-icon fa fa-circle smaller-80 align-middle"></i>
+                  offline
                 </span>
               </h4>
 
@@ -70,15 +74,15 @@
                   <div class="profile-info-name">Joined</div>
 
                   <div class="profile-info-value">
-                    <span>{{joined}}</span>
+                    <span>{{ joined }}</span>
                   </div>
                 </div>
 
-                <div class="profile-info-row">
+                <div v-if="online.online == false" class="profile-info-row">
                   <div class="profile-info-name">Last Online</div>
 
                   <div class="profile-info-value">
-                    <span>3 hours ago</span>
+                    <span>{{online.time}} ago</span>
                   </div>
                 </div>
               </div>
@@ -180,6 +184,7 @@ import api from "../service/api";
 export default {
   data: () => ({
     user: {},
+    online: {},
   }),
 
   computed: {
@@ -214,23 +219,36 @@ export default {
       return age;
     },
 
-    joined(){
-      var created = this.user.created.split(' ');
+    joined() {
+      var created = this.user.created.split(" ");
 
       var time = created[1];
       var date = created[0];
-      
+
       return date;
-    }
+    },
   },
+
+  methods: {
+    async getStatusOnline() {
+      var {data} = await api.get(`session/show.php?id=${this.user.id_user}`);
+      this.online = data;
+      console.log(this.online);
+    },
+  },
+
   async created() {
     const id = this.$route.params.id;
 
     const user = await api.get(`user/show.php?id=${id}`);
-    console.log(user)
+
     this.user = user.data.user;
 
-    console.log(this.user);
+    this.getStatusOnline();
+
+    setInterval(() => {
+      this.getStatusOnline();
+    }, 100000);
   },
 };
 </script>

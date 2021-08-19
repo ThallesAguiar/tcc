@@ -353,6 +353,8 @@ export default {
           localStorage.setItem("enterprise", JSON.stringify(enterprise.data));
         }
 
+        await api.put(`session/update.php?id=${user.data.user.id_user}`);
+
         if (
           user.data.user.enterprise == 1 &&
           user.data.user.id_enterprise == null
