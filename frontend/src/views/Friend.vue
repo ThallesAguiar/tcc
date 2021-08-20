@@ -33,8 +33,14 @@
               <h4 class="blue">
                 <span class="middle">{{ nameComplete }}</span>
 
-                <span v-if="online.online == true" class="label label-purple arrowed-in-right">
-                  <i class="ace-icon fa fa-circle smaller-80 align-middle" style="color: #90ee90"></i>
+                <span
+                  v-if="online.online == true"
+                  class="label label-purple arrowed-in-right"
+                >
+                  <i
+                    class="ace-icon fa fa-circle smaller-80 align-middle"
+                    style="color: #90ee90"
+                  ></i>
                   online
                 </span>
                 <span v-else class="label label-purple arrowed-in-right">
@@ -82,16 +88,16 @@
                   <div class="profile-info-name">Last Online</div>
 
                   <div class="profile-info-value">
-                    <span>{{online.time}} ago</span>
+                    <span>{{ online.time }} ago</span>
                   </div>
                 </div>
               </div>
 
-              <div class="hr hr-8 dotted"></div>
+              <div class="hr hr-8 dotted font-weight-bold">Find me in</div>
 
               <div class="profile-user-info">
                 <div class="profile-info-row">
-                  <div class="profile-info-name">Website</div>
+                  <div class="profile-info-name">Site</div>
 
                   <div class="profile-info-value">
                     <a href="#" target="_blank">www.alexdoe.com</a>
@@ -100,37 +106,61 @@
 
                 <div class="profile-info-row">
                   <div class="profile-info-name">
-                    <i
-                      class="
-                        middle
-                        ace-icon
-                        fa fa-facebook-square
-                        bigger-150
-                        blue
-                      "
-                    ></i>
+                    Group whats
                   </div>
 
                   <div class="profile-info-value">
-                    <a href="#">Find me on Facebook</a>
+                    <a href="#">Find me on Group whats</a>
                   </div>
                 </div>
 
                 <div class="profile-info-row">
                   <div class="profile-info-name">
-                    <i
-                      class="
-                        middle
-                        ace-icon
-                        fa fa-twitter-square
-                        bigger-150
-                        light-blue
-                      "
-                    ></i>
+                    Instagram
+                  </div>
+
+                  <div class="profile-info-value">
+                    <a href="#">Follow me on Instagram</a>
+                  </div>
+                </div>
+
+                <div class="profile-info-row">
+                  <div class="profile-info-name">
+                    Twitter
                   </div>
 
                   <div class="profile-info-value">
                     <a href="#">Follow me on Twitter</a>
+                  </div>
+                </div>
+
+                <div class="profile-info-row">
+                  <div class="profile-info-name">
+                    Whatsapp
+                  </div>
+
+                  <div class="profile-info-value">
+                    <a href="#">Follow me on Whatsapp</a>
+                  </div>
+                </div>
+
+                <div class="profile-info-row">
+                  <div class="profile-info-name">
+                    Facebook
+                  </div>
+
+                  <div class="profile-info-value">
+                    <a href="#">Follow me on Facebook</a>
+                  </div>
+                </div>
+
+                <div class="profile-info-row">
+                  <div class="profile-info-name">
+                    Other
+                  </div>
+
+                  <div class="profile-info-value">
+                    <a href="#">Follow me on xxxxxxx</a>
                   </div>
                 </div>
               </div>
@@ -154,19 +184,29 @@
                 <div class="widget-body">
                   <div class="widget-main">
                     <p>
-                      My job is mostly lorem ipsuming and dolor sit ameting as
-                      long as consectetur adipiscing elit.
+                      {{ user.bio }}
                     </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="history" class="row">
+            <div class="col-xs-12 col-sm-6">
+              <div class="widget-box transparent">
+                <div class="widget-header widget-header-small">
+                  <h4 class="widget-title smaller">
+                    <i class="ace-icon fa fa-check-square-o bigger-110"></i>
+                    History
+                  </h4>
+                </div>
+
+                <div class="widget-body">
+                  <div class="widget-main">
                     <p>
-                      Sometimes quisque commodo massa gets in the way and sed
-                      ipsum porttitor facilisis.
+                      {{ history.description }}
                     </p>
-                    <p>
-                      The best thing about my job is that vestibulum id ligula
-                      porta felis euismod and nullam quis risus eget urna mollis
-                      ornare.
-                    </p>
-                    <p>Thanks for visiting my profile.</p>
                   </div>
                 </div>
               </div>
@@ -184,7 +224,8 @@ import api from "../service/api";
 export default {
   data: () => ({
     user: {},
-    online: {},
+    online: "",
+    history: "",
   }),
 
   computed: {
@@ -231,7 +272,7 @@ export default {
 
   methods: {
     async getStatusOnline() {
-      var {data} = await api.get(`session/show.php?id=${this.user.id_user}`);
+      var { data } = await api.get(`session/show.php?id=${this.user.id_user}`);
       this.online = data;
       console.log(this.online);
     },
@@ -241,8 +282,10 @@ export default {
     const id = this.$route.params.id;
 
     const user = await api.get(`user/show.php?id=${id}`);
+    const history = await api.get(`history/show.php?id=${id}`);
 
     this.user = user.data.user;
+    this.history = history.data.history;
 
     this.getStatusOnline();
 
