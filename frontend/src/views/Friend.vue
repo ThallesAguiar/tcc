@@ -93,74 +93,20 @@
                 </div>
               </div>
 
-              <div class="hr hr-8 dotted font-weight-bold">Find me in</div>
+              <div v-if="social_networks">
+                <div class="hr hr-8 dotted font-weight-bold">Find me in</div>
 
-              <div class="profile-user-info">
-                <div class="profile-info-row">
-                  <div class="profile-info-name">Site</div>
+                <div
+                  v-for="sn in social_networks"
+                  :key="sn.id_social_network"
+                  class="profile-user-info"
+                >
+                  <div class="profile-info-row">
+                    <div class="profile-info-name">{{ sn.name }}</div>
 
-                  <div class="profile-info-value">
-                    <a href="#" target="_blank">www.alexdoe.com</a>
-                  </div>
-                </div>
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    Group whats
-                  </div>
-
-                  <div class="profile-info-value">
-                    <a href="#">Find me on Group whats</a>
-                  </div>
-                </div>
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    Instagram
-                  </div>
-
-                  <div class="profile-info-value">
-                    <a href="#">Follow me on Instagram</a>
-                  </div>
-                </div>
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    Twitter
-                  </div>
-
-                  <div class="profile-info-value">
-                    <a href="#">Follow me on Twitter</a>
-                  </div>
-                </div>
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    Whatsapp
-                  </div>
-
-                  <div class="profile-info-value">
-                    <a href="#">Follow me on Whatsapp</a>
-                  </div>
-                </div>
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    Facebook
-                  </div>
-
-                  <div class="profile-info-value">
-                    <a href="#">Follow me on Facebook</a>
-                  </div>
-                </div>
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    Other
-                  </div>
-
-                  <div class="profile-info-value">
-                    <a href="#">Follow me on xxxxxxx</a>
+                    <div class="profile-info-value">
+                      <a :href="sn.link" target="_blank">{{ sn.link }}</a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -226,6 +172,7 @@ export default {
     user: {},
     online: "",
     history: "",
+    social_networks: "",
   }),
 
   computed: {
@@ -283,9 +230,17 @@ export default {
 
     const user = await api.get(`user/show.php?id=${id}`);
     const history = await api.get(`history/show.php?id=${id}`);
+    const social_networks = await api.get(`social-network/index.php?id=${id}`);
 
     this.user = user.data.user;
     this.history = history.data.history;
+    this.social_networks = social_networks.data;
+
+    if (this.social_networks.empty == true) {
+      this.social_networks = false;
+    }
+
+    console.log(social_networks.data);
 
     this.getStatusOnline();
 
