@@ -85,7 +85,7 @@ class UserDAO
     public static function updateUserById(UserVO $user, $conn)
     {
         $pass = null;
-        if($user->getPassword() != null){
+        if ($user->getPassword() != null) {
             $p = md5($user->getPassword());
             $pass = "password='$p',";
         }
@@ -152,7 +152,7 @@ class UserDAO
     public static function updateCoordinatesUser(UserVO $user, $conn)
     {
         // $sql = "UPDATE `user` SET `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
-        $sql = "UPDATE `user` SET `lat`= '".$user->getLat() . "', `lng`= '".$user->getLng() . "', `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
+        $sql = "UPDATE `user` SET `lat`= '" . $user->getLat() . "', `lng`= '" . $user->getLng() . "', `coordinates`= ST_GeomFromText('POINT(" . $user->getCoordinates() . ")') WHERE `id_user` = " . $user->getId_user() . "";
         mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -187,4 +187,72 @@ class UserDAO
 
         return mysqli_fetch_assoc($query);
     }
+
+    /**
+     * Função para usuário seguir outro.
+     */
+    public static function like($id_user, $like, $conn)
+    {
+        $sql = "INSERT INTO `following` (`id_user`, `like`) VALUES ('$id_user', '$like')";
+        mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+    }
+    /**
+     * Função para usuário deseguir outro.
+     */
+    public static function dislike($id_user, $like, $conn)
+    {
+        $sql = "DELETE FROM `following` WHERE `id_user`='$id_user' AND `like`= '$like'";
+        mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+    }
+    /**
+     * Mostra se você segue o usuário selecionado.
+     */
+    public static function following($id_user, $like, $conn)
+    {
+        $sql = "SELECT * FROM `following` WHERE `id_user`='$id_user' AND `like`= '$like'";
+        $query = mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+
+        if (mysqli_num_rows($query) <= 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Função para mostrar seus amigos.
+     */
+    // public static function friends($id_user, $like, $conn)
+    // {
+    //     $sql = "SELECT * FROM `following` (`id_user`, `like`) VALUES ('$id_user', '$like')";
+    //     mysqli_query($conn, $sql);
+
+    //     if (mysqli_error($conn)) {
+    //         header('HTTP/1.1 400 error in DB');
+    //         ob_clean();
+    //         echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+    //         die();
+    //     }
+    // }
 }

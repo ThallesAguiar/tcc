@@ -22,10 +22,24 @@
 
               <div class="space space-4"></div>
 
-              <a href="#" class="btn btn-sm btn-block btn-success my-2">
+              <button
+                v-if="follow == false"
+                href="#"
+                class="btn btn-sm btn-block btn-success my-2"
+                @click="follower(user.id_user)"
+              >
                 <i class="ace-icon fa fa-plus-circle bigger-120"></i>
-                <span class="bigger-110">Follow as a friend</span>
-              </a>
+                <span class="bigger-110"> Follow as a friend</span>
+              </button>
+
+              <button
+                v-else
+                class="btn btn-sm btn-block btn-primary my-2"
+                @click="follower(user.id_user)"
+              >
+                <i class="ace-icon fa fa-heart bigger-120"></i>
+                <span class="bigger-110"> Following</span>
+              </button>
             </div>
             <!-- /.col -->
 
@@ -102,10 +116,10 @@
                   class="profile-user-info"
                 >
                   <div class="profile-info-row">
-                    <div class="profile-info-name">{{ sn.name }}</div>
+                    <!-- <div class="profile-info-name">{{ sn.name }}</div> -->
 
                     <div class="profile-info-value">
-                      <a :href="sn.link" target="_blank">{{ sn.link }}</a>
+                      <a :href="sn.link" target="_blank">{{ sn.name }}</a>
                     </div>
                   </div>
                 </div>
@@ -173,6 +187,7 @@ export default {
     online: "",
     history: "",
     social_networks: "",
+    follow: false,
   }),
 
   computed: {
@@ -221,7 +236,18 @@ export default {
     async getStatusOnline() {
       var { data } = await api.get(`session/show.php?id=${this.user.id_user}`);
       this.online = data;
-      console.log(this.online);
+    },
+
+    // Seguir/Desseguir usuário
+    async follower(id) {
+      await api.get(`user/follow.php?id=${id}`);
+      this.following(id);
+    },
+
+    // Verifica se você segue esse usuário
+    async following(id) {
+      var follow = await api.get(`user/following.php?id=${id}`);
+      this.follow = follow.data;
     },
   },
 
@@ -240,7 +266,7 @@ export default {
       this.social_networks = false;
     }
 
-    console.log(social_networks.data);
+    this.following(id);
 
     this.getStatusOnline();
 

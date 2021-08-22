@@ -253,6 +253,7 @@
 <script>
 import countries from "../../data/countries.json";
 import axios from "axios";
+import api from "../../service/api";
 
 export default {
   data: () => ({
