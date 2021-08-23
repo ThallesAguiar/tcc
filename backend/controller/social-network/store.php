@@ -24,6 +24,7 @@ if ($array = json_decode(file_get_contents("php://input"), true)) :
     $socialNetworkVO->setId_user($userVerified->id);
     $socialNetworkVO->setName($array['name']);
     $socialNetworkVO->setLink($array['link']);
+    $socialNetworkVO->setIcon($array['icon']);
 
     SocialNetworkDAO::save($socialNetworkVO, $conn);
 

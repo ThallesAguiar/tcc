@@ -5,6 +5,7 @@ class SocialNetworkVO
     private $id_social_network;
     private $name;
     private $link;
+    private $icon;
     private $id_user;
 
     /**
@@ -96,6 +97,29 @@ class SocialNetworkVO
     public function setId_user($id_user)
     {
         $this->id_user = $id_user;
+        return $this;
+    }
+
+    /**
+     * Get the value of id_user
+     *
+     * @return  mixed
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * Set the value of icon
+     *
+     * @param   mixed  $icon  
+     *
+     * @return  self
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
         return $this;
     }
 }

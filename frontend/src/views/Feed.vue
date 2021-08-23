@@ -85,12 +85,18 @@
                     class="profile-user-info"
                   >
                     <div class="profile-info-row">
-                      <div class="profile-info-name">{{ sn.name }}</div>
+                      <div class="profile-info-name">
+                        <button class="p-1 ml-1 btn btn-warning btn-sm">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="p-1 ml-1 btn btn-danger btn-sm">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
 
                       <div class="profile-info-value">
+                        <i :class="sn.icon"></i>
                         <a :href="sn.link" target="_blank">{{ sn.name }} </a>
-                        <button class="p-1 ml-1 btn btn-warning btn-sm"><i class="fa fa-edit"></i> </button> 
-                        <button class="p-1 ml-1 btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                       </div>
                     </div>
                   </div>
@@ -377,14 +383,14 @@ export default {
     showModal: false,
     typeSN: -1,
     networks: [
-      { name: "WhatsApp", value: 0, icon: "" },
-      { name: "Grupo WhatsApp", value: 1, icon: "" },
-      { name: "Instagram", value: 2, icon: "" },
-      { name: "Facebook", value: 3, icon: "" },
-      { name: "Twitter", value: 4, icon: "" },
-      { name: "Site", value: 5, icon: "" },
-      { name: "E-mail", value: 6, icon: "" },
-      { name: "Outro", value: 7, icon: "" },
+      { name: "WhatsApp", value: 0, icon: "fa fa-whatsapp" },
+      { name: "Grupo WhatsApp", value: 1, icon: "fa fa-whatsapp" },
+      { name: "Instagram", value: 2, icon: "fa fa-instagram" },
+      { name: "Facebook", value: 3, icon: "fa fa-facebook" },
+      { name: "Twitter", value: 4, icon: "fa fa-twitter" },
+      { name: "Site", value: 5, icon: "fa fa-globe" },
+      { name: "E-mail", value: 6, icon: "fa fa-at" },
+      { name: "Outro", value: 7, icon: "fa fa-paste" },
     ],
     countries: countries,
     dialCode: "",
@@ -448,6 +454,7 @@ export default {
       await api.post(`social-network/store.php`, {
         name: this.networks[value].name,
         link,
+        icon: this.networks[value].icon,
       });
 
       this.getSocialNetworks();

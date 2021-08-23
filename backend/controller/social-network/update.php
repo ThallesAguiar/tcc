@@ -27,6 +27,7 @@ $socialNetworkVO = new SocialNetworkVO;
 $socialNetworkVO->setId_social_network($array['id']);
 $socialNetworkVO->setName($array['name']);
 $socialNetworkVO->setLink($array['link']);
+$socialNetworkVO->setIcon($array['icon']);
 
 SocialNetworkDAO::update($socialNetworkVO, $conn);
 

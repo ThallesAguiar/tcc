@@ -7,8 +7,8 @@ class SocialNetworkDAO
      */
     public static function save(SocialNetworkVO $socialNetworkVO, $conn)
     {
-        $sql = "INSERT INTO `social_network`(`id_user`, `name`, `link` ) 
-        VALUES ('" . $socialNetworkVO->getId_user() . "','" . $socialNetworkVO->getName() . "', '" . $socialNetworkVO->getLink() . "')";
+        $sql = "INSERT INTO `social_network`(`id_user`, `name`, `link`,`icon` ) 
+        VALUES ('" . $socialNetworkVO->getId_user() . "','" . $socialNetworkVO->getName() . "', '" . $socialNetworkVO->getLink() . "','" . $socialNetworkVO->getIcon() . "')";
 
         mysqli_query($conn, $sql);
 
@@ -76,7 +76,7 @@ class SocialNetworkDAO
      */
     public static function update(SocialNetworkVO $social_network, $conn)
     {
-        $sql = "UPDATE `social_network` SET `name`='" . $social_network->getName() . "', `link`='" . $social_network->getLink() . "' WHERE `id_social_network` = " . $social_network->getId_social_network() . "";
+        $sql = "UPDATE `social_network` SET `name`='" . $social_network->getName() . "', `link`='" . $social_network->getLink() . "',`icon`='" . $social_network->getIcon() . "' WHERE `id_social_network` = " . $social_network->getId_social_network() . "";
         // var_dump($sql);die();
 
         if (mysqli_error($conn)) {
