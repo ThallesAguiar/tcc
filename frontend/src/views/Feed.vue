@@ -86,10 +86,13 @@
                   >
                     <div class="profile-info-row">
                       <div class="profile-info-name">
-                        <button class="p-1 ml-1 btn btn-warning btn-sm">
+                        <button class="p-1 ml-1 btn btn-warning btn-sm" @click="updateModal(sn.id_social_network), btn='update'">
                           <i class="fa fa-edit"></i>
                         </button>
-                        <button class="p-1 ml-1 btn btn-danger btn-sm">
+                        <button
+                          class="p-1 ml-1 btn btn-danger btn-sm"
+                          @click="deleteSocialNetwork(sn.id_social_network, sn.name )"
+                        >
                           <i class="fa fa-trash"></i>
                         </button>
                       </div>
@@ -105,16 +108,14 @@
                     Add
                     <button
                       type="button"
-                      @click="showModal = true"
+                      @click="showModal = true, btn='save'"
                       class="btn btn-success btn-sm"
                     >
                       <i class="fa fa-plus"></i>
                     </button>
                   </div>
 
-                  <div class="profile-info-value">
-                    ...
-                  </div>
+                  <div class="profile-info-value">...</div>
                 </div>
                 <div v-else>
                   <div class="hr hr-8 dotted font-weight-bold">
@@ -127,23 +128,19 @@
                         Add
                         <button
                           type="button"
-                          @click="showModal = true"
+                          @click="showModal = true, btn='save'"
                           class="btn btn-success btn-sm"
                         >
                           <i class="fa fa-plus"></i>
                         </button>
                       </div>
 
-                      <div class="profile-info-value">
-                        ...
-                      </div>
+                      <div class="profile-info-value">...</div>
                     </div>
                   </div>
                 </div>
 
-                <div class="container mt-5">
-                  your friends
-                </div>
+                <div class="container mt-5">your friends</div>
               </div>
             </div>
             <!-- /.col -->
@@ -233,8 +230,9 @@
                         v-for="network in networks"
                         :key="network.value"
                         :value="network.value"
-                        >{{ network.name }}</option
                       >
+                        {{ network.name }}
+                      </option>
                     </select>
                   </div>
 
@@ -245,9 +243,9 @@
                       class="custom-select mr-sm-2"
                       v-model="dialCode"
                     >
-                      <option disabled selected
-                        >Select your code country</option
-                      >
+                      <option disabled selected>
+                        Select your code country
+                      </option>
                       <option
                         v-for="country in countries"
                         :key="country.name"
@@ -354,11 +352,21 @@
                     Close
                   </button>
                   <button
+                  v-if="btn == 'save'"
                     type="button"
                     class="btn btn-primary"
                     @click="addSocialNetwork(typeSN)"
                   >
                     Save changes
+                  </button>
+
+                  <button
+                  v-if="btn=='update'"
+                    type="button"
+                    class="btn btn-warning"
+                    @click="updateSocialNetwork(typeSN)"
+                  >
+                    Update changes
                   </button>
                 </div>
               </div>
@@ -395,6 +403,8 @@ export default {
     countries: countries,
     dialCode: "",
     link_sn: "",
+    btn: '',
+    id_sn:'',
   }),
 
   computed: {
@@ -439,8 +449,9 @@ export default {
 
     async addSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
-          this.link_sn}`;
+        var link = `https://api.whatsapp.com/send/?phone=${
+          this.dialCode + this.link_sn
+        }`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -460,6 +471,38 @@ export default {
       this.getSocialNetworks();
       this.showModal = false;
       this.typeSN = -1;
+      this.link_sn = "";
+      this.btn = '';
+    },
+
+    async updateSocialNetwork(value){
+      if (value == 0) {
+        var link = `https://api.whatsapp.com/send/?phone=${
+          this.dialCode + this.link_sn
+        }`;
+      } else if (value == 1 || value == 5 || value == 6 || value == 7) {
+        var link = this.link_sn;
+      } else if (value == 2) {
+        var link = `https://www.instagram.com/${this.link_sn}`;
+      } else if (value == 2) {
+        var link = `https://www.facebook.com/${this.link_sn}`;
+      } else if (value == 4) {
+        var link = `https://twitter.com/${this.link_sn}`;
+      }
+
+      await api.put(`social-network/update.php`, {
+        id:this.id_sn,
+        name: this.networks[value].name,
+        link,
+        icon: this.networks[value].icon,
+      });
+
+      this.getSocialNetworks();
+      this.showModal = false;
+      this.typeSN = -1;
+      this.link_sn = "";
+      this.btn = '';
+      this.id_sn = '';
     },
 
     async getSocialNetworks() {
@@ -471,6 +514,47 @@ export default {
       if (this.social_networks.empty == true) {
         this.social_networks = false;
       }
+    },
+
+    async deleteSocialNetwork(id, name) {
+      var resposta = confirm("Deseja excluir seu " + name + "?");
+        if (resposta == true) {
+          await api.delete(`social-network/delete.php?id=${id}`);  
+          this.getSocialNetworks();          
+        }
+    },
+
+    async updateModal(id) {
+      const {data} = await api.get(
+        `social-network/show.php?id=${id}`
+      );
+
+      if (data.name == 'WhatsApp') {
+        this.typeSN = 0;
+      } else if (data.name == 'Grupo WhatsApp') {
+        this.typeSN = 1;
+      } 
+      else if (data.name == 'Instagram') {
+        this.typeSN = 2;
+      } 
+      else if (data.name == 'Facebook') {
+        this.typeSN = 3;
+      } 
+      else if (data.name == 'Twitter') {
+        this.typeSN = 4;
+      } 
+      else if (data.name == 'Site') {
+        this.typeSN = 5;
+      } 
+      else if (data.name == 'E-mail') {
+        this.typeSN = 6;
+      } 
+      else if (data.name == 'Outro') {
+        this.typeSN = 7;
+      } 
+      this.id_sn = id;
+      this.link_sn = "";
+      this.showModal = true;      
     },
   },
 
