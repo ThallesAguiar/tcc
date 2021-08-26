@@ -1,9 +1,25 @@
 <?php
-require_once("../../middleware/auth.php");
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=utf-8");
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods:  GET, POST, PATCH, PUT, DELETE, OPTIONS");
 
+require_once("../../config/autoLoad.php");
+require_once("../../config/connection.php");
+
+$token = isset($_SERVER["HTTP_AUTHORIZATION"]) ? $_SERVER["HTTP_AUTHORIZATION"] : null;
+
+$auth = new SessionDAO;
+
+if (!$userVerified = $auth->verifyAuth($token)) {
+    header('HTTP/1.1 400 token is not valid!');
+    echo json_encode(["error" => true, "msg" => "Token is not valid!"]);
+    die();
+}
+
+// $addressVO = new AddressVO;
 if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerified->id_enterprise != null) {
     if ($array = json_decode(file_get_contents("php://input"), true)) :
-
         $addressVO = new AddressVO;
         $addressVO->setStreet($array['street']);
         $addressVO->setNumber($array['number']);
@@ -24,7 +40,16 @@ if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerif
 
     endif;
 } else {
-    header('HTTP/1.1 400 negado');
-    ob_clean();
-    echo json_encode(["erro" => true, "msg" => "Você não possuí uma empresa ativa na sua conta"]);
+    if ($array = json_decode(file_get_contents("php://input"), true)) :
+        $addressVO = new AddressVO;
+        $addressVO->setCity($array['city']);
+        $addressVO->setCountry($array['country']);
+
+        UserDAO::addLocation($addressVO, $userVerified->id, $conn);
+
+        header('HTTP/1.1 200 created');
+        ob_clean();
+        echo json_encode(['success'=>true, 'msg'=>'Address added']);
+
+    endif;
 }

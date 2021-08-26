@@ -22,12 +22,16 @@
 
               <div class="space space-4"></div>
 
-              <button class="btn btn-sm btn-secondary my-2">
+              <router-link
+                to="/"
+                class="btn btn-sm btn-secondary my-2 mx-2"
+                type="button"
+              >
                 <i class="ace-icon fa fa-sign-out-alt bigger-120"></i>
                 <span class="bigger-110"> Logout </span>
-              </button>
-              <br />
-              <button class="btn btn-sm btn-primary my-2">
+              </router-link>
+
+              <button class="btn btn-sm btn-primary my-2 mx-2">
                 <i class="ace-icon fa fa-cog bigger-120"></i>
                 <span class="bigger-110"> Update </span>
               </button>
@@ -49,12 +53,41 @@
                 </div> -->
 
                 <div class="profile-info-row">
-                  <div class="profile-info-name">Location</div>
+                  <div class="profile-info-name">
+                    From
+                    <div v-if="from != null" class="profile-info-name">
+                      <button
+                        class="p-1 ml-1 btn btn-warning btn-sm"
+                        @click="updateModal(), (typeModal = 'from')"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      <button
+                        class="p-1 ml-1 btn btn-danger btn-sm"
+                        @click="deleteSocialNetwork()"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                    <div v-else class="profile-info-name">
+                      <button
+                        type="button"
+                        @click="
+                          (showModal = true),
+                            (typeModal = 'from'),
+                            (btn = 'save')
+                        "
+                        class="btn btn-success btn-sm"
+                      >
+                        <i class="fa fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
 
-                  <div class="profile-info-value">
+                  <div v-if="from != null" class="profile-info-value">
                     <i class="fa fa-map-marker light-orange bigger-110"></i>
-                    <span>Netherlands</span>
-                    <span>Amsterdam</span>
+                    <span>{{ from.city }}</span>
+                    <span>{{ from.country }}</span>
                   </div>
                 </div>
 
@@ -86,12 +119,21 @@
                   >
                     <div class="profile-info-row">
                       <div class="profile-info-name">
-                        <button class="p-1 ml-1 btn btn-warning btn-sm" @click="updateModal(sn.id_social_network), btn='update'">
+                        <button
+                          class="p-1 ml-1 btn btn-warning btn-sm"
+                          @click="
+                            updateModal(sn.id_social_network),
+                              (typeModal = 'SN'),
+                              (btn = 'update')
+                          "
+                        >
                           <i class="fa fa-edit"></i>
                         </button>
                         <button
                           class="p-1 ml-1 btn btn-danger btn-sm"
-                          @click="deleteSocialNetwork(sn.id_social_network, sn.name )"
+                          @click="
+                            deleteSocialNetwork(sn.id_social_network, sn.name)
+                          "
                         >
                           <i class="fa fa-trash"></i>
                         </button>
@@ -108,7 +150,9 @@
                     Add
                     <button
                       type="button"
-                      @click="showModal = true, btn='save'"
+                      @click="
+                        (showModal = true), (typeModal = 'SN'), (btn = 'save')
+                      "
                       class="btn btn-success btn-sm"
                     >
                       <i class="fa fa-plus"></i>
@@ -128,7 +172,11 @@
                         Add
                         <button
                           type="button"
-                          @click="showModal = true, btn='save'"
+                          @click="
+                            (showModal = true),
+                              (typeModal = 'SN'),
+                              (btn = 'save')
+                          "
                           class="btn btn-success btn-sm"
                         >
                           <i class="fa fa-plus"></i>
@@ -201,7 +249,7 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-dialog" role="document">
-              <div class="modal-content">
+              <div v-if="typeModal == 'SN'" class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Social Networks</h5>
                   <button
@@ -352,7 +400,7 @@
                     Close
                   </button>
                   <button
-                  v-if="btn == 'save'"
+                    v-if="btn == 'save'"
                     type="button"
                     class="btn btn-primary"
                     @click="addSocialNetwork(typeSN)"
@@ -361,7 +409,69 @@
                   </button>
 
                   <button
-                  v-if="btn=='update'"
+                    v-if="btn == 'update'"
+                    type="button"
+                    class="btn btn-warning"
+                    @click="updateSocialNetwork(typeSN)"
+                  >
+                    Update changes
+                  </button>
+                </div>
+              </div>
+              <div v-if="typeModal == 'from'" class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Where are you from?</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span
+                      aria-hidden="true"
+                      @click="(showModal = false), (typeSN = -1)"
+                      >&times;</span
+                    >
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group my-5">
+                    <label for="sn">Select a social network</label>
+                    <select
+                      id="sn"
+                      class="form-control form-control"
+                      v-model="typeSN"
+                    >
+                      <option selected disabled>Select a Social Network</option>
+                      <option
+                        v-for="network in networks"
+                        :key="network.value"
+                        :value="network.value"
+                      >
+                        {{ network.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="(showModal = false), (typeSN = -1)"
+                  >
+                    Close
+                  </button>
+                  <button
+                    v-if="btn == 'save'"
+                    type="button"
+                    class="btn btn-primary"
+                    @click="addSocialNetwork(typeSN)"
+                  >
+                    Save changes
+                  </button>
+
+                  <button
+                    v-if="btn == 'update'"
                     type="button"
                     class="btn btn-warning"
                     @click="updateSocialNetwork(typeSN)"
@@ -403,8 +513,10 @@ export default {
     countries: countries,
     dialCode: "",
     link_sn: "",
-    btn: '',
-    id_sn:'',
+    btn: "",
+    id_sn: "",
+    from: "",
+    typeModal: "",
   }),
 
   computed: {
@@ -472,10 +584,10 @@ export default {
       this.showModal = false;
       this.typeSN = -1;
       this.link_sn = "";
-      this.btn = '';
+      this.btn = "";
     },
 
-    async updateSocialNetwork(value){
+    async updateSocialNetwork(value) {
       if (value == 0) {
         var link = `https://api.whatsapp.com/send/?phone=${
           this.dialCode + this.link_sn
@@ -491,7 +603,7 @@ export default {
       }
 
       await api.put(`social-network/update.php`, {
-        id:this.id_sn,
+        id: this.id_sn,
         name: this.networks[value].name,
         link,
         icon: this.networks[value].icon,
@@ -501,8 +613,8 @@ export default {
       this.showModal = false;
       this.typeSN = -1;
       this.link_sn = "";
-      this.btn = '';
-      this.id_sn = '';
+      this.btn = "";
+      this.id_sn = "";
     },
 
     async getSocialNetworks() {
@@ -518,49 +630,49 @@ export default {
 
     async deleteSocialNetwork(id, name) {
       var resposta = confirm("Deseja excluir seu " + name + "?");
-        if (resposta == true) {
-          await api.delete(`social-network/delete.php?id=${id}`);  
-          this.getSocialNetworks();          
-        }
+      if (resposta == true) {
+        await api.delete(`social-network/delete.php?id=${id}`);
+        this.getSocialNetworks();
+      }
     },
 
     async updateModal(id) {
-      const {data} = await api.get(
-        `social-network/show.php?id=${id}`
-      );
+      const { data } = await api.get(`social-network/show.php?id=${id}`);
 
-      if (data.name == 'WhatsApp') {
+      if (data.name == "WhatsApp") {
         this.typeSN = 0;
-      } else if (data.name == 'Grupo WhatsApp') {
+      } else if (data.name == "Grupo WhatsApp") {
         this.typeSN = 1;
-      } 
-      else if (data.name == 'Instagram') {
+      } else if (data.name == "Instagram") {
         this.typeSN = 2;
-      } 
-      else if (data.name == 'Facebook') {
+      } else if (data.name == "Facebook") {
         this.typeSN = 3;
-      } 
-      else if (data.name == 'Twitter') {
+      } else if (data.name == "Twitter") {
         this.typeSN = 4;
-      } 
-      else if (data.name == 'Site') {
+      } else if (data.name == "Site") {
         this.typeSN = 5;
-      } 
-      else if (data.name == 'E-mail') {
+      } else if (data.name == "E-mail") {
         this.typeSN = 6;
-      } 
-      else if (data.name == 'Outro') {
+      } else if (data.name == "Outro") {
         this.typeSN = 7;
-      } 
+      }
       this.id_sn = id;
       this.link_sn = "";
-      this.showModal = true;      
+      this.showModal = true;
     },
   },
 
   async created() {
     this.user = JSON.parse(localStorage.getItem("user"));
     this.history = localStorage.getItem("history");
+
+    const from = JSON.parse(localStorage.getItem("from"));
+
+    if (from.city != null && from.country != null) {
+      this.from = from;
+    } else {
+      this.from = null;
+    }
 
     this.getSocialNetworks();
 

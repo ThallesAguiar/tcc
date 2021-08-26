@@ -337,8 +337,10 @@ export default {
             password: this.user.pass,
           }
         );
+
         localStorage.setItem("token", user.data.token);
         localStorage.setItem("user", JSON.stringify(user.data.user));
+        localStorage.setItem("from", JSON.stringify({city:user.data.user.city,country:user.data.user.country,}));
 
         const history = await axios.get(
           `http://localhost/mateship/backend/controller/history/show.php?id=${user.data.user.id_user}`
@@ -418,6 +420,14 @@ export default {
         : { toolbar: "Create account", button: "I have an account" };
     },
   },
+
+  created(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('from');
+    localStorage.removeItem('history');
+    localStorage.removeItem('enterprise');
+  }
 };
 </script>
 

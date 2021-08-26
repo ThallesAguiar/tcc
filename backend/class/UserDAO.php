@@ -31,7 +31,7 @@ class UserDAO
     {
         $usersArray = array();
 
-        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng  FROM `user`";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng, city, country  FROM `user`";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -60,7 +60,7 @@ class UserDAO
      */
     public static function getUserById($id, $conn)
     {
-        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng, created  FROM `user` WHERE id_user = $id";
+        $sql = "SELECT id_user, email, name, lastname, birthday, gender, phone, avatar, bio, `status`, businessman, id_enterprise, ST_AsText(coordinates) coordinates, lat, lng, created, city, country  FROM `user` WHERE id_user = $id";
         $query = mysqli_query($conn, $sql);
 
         if (mysqli_error($conn)) {
@@ -255,4 +255,22 @@ class UserDAO
     //         die();
     //     }
     // }
+
+
+    /**
+     * Cadastrar cidade e país
+     */
+    public static function addLocation(AddressVO $address, $id_user, $conn)
+    {
+        $sql = "UPDATE `user` SET `city`='" . $address->getCity() . "',`country`='" . $address->getCountry() . "' WHERE `id_user` = $id_user";
+        
+        mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+    }
 }
