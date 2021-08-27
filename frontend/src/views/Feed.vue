@@ -31,10 +31,14 @@
                 <span class="bigger-110"> Logout </span>
               </router-link>
 
-              <button class="btn btn-sm btn-primary my-2 mx-2">
+              <router-link
+                to="/config"
+                class="btn btn-sm btn-primary my-2 mx-2"
+                type="button"
+              >
                 <i class="ace-icon fa fa-cog bigger-120"></i>
                 <span class="bigger-110"> Update </span>
-              </button>
+              </router-link>
             </div>
             <!-- /.col -->
 
@@ -55,7 +59,7 @@
                 <div class="profile-info-row">
                   <div class="profile-info-name">
                     From
-                    <div v-if="from != null" class="profile-info-name">
+                    <div v-if="from.city != null && from.country != null" class="profile-info-name">
                       <button
                         class="p-1 ml-1 btn btn-warning btn-sm"
                         @click="updateModal(), (typeModal = 'from')"
@@ -64,7 +68,7 @@
                       </button>
                       <button
                         class="p-1 ml-1 btn btn-danger btn-sm"
-                        @click="deleteSocialNetwork()"
+                        @click="deleteFrom()"
                       >
                         <i class="fa fa-trash"></i>
                       </button>
@@ -74,8 +78,7 @@
                         type="button"
                         @click="
                           (showModal = true),
-                            (typeModal = 'from'),
-                            (btn = 'save')
+                            (typeModal = 'from')
                         "
                         class="btn btn-success btn-sm"
                       >
@@ -84,7 +87,7 @@
                     </div>
                   </div>
 
-                  <div v-if="from != null" class="profile-info-value">
+                  <div v-if="from.city != null && from.country != null" class="profile-info-value">
                     <i class="fa fa-map-marker light-orange bigger-110"></i>
                     <span>{{ from.city }}</span>
                     <span>{{ from.country }}</span>
@@ -427,56 +430,51 @@
                     data-dismiss="modal"
                     aria-label="Close"
                   >
-                    <span
-                      aria-hidden="true"
-                      @click="(showModal = false), (typeSN = -1)"
+                    <span aria-hidden="true" @click="showModal = false"
                       >&times;</span
                     >
                   </button>
                 </div>
                 <div class="modal-body">
-                  <div class="form-group my-5">
-                    <label for="sn">Select a social network</label>
-                    <select
-                      id="sn"
-                      class="form-control form-control"
-                      v-model="typeSN"
-                    >
-                      <option selected disabled>Select a Social Network</option>
-                      <option
-                        v-for="network in networks"
-                        :key="network.value"
-                        :value="network.value"
+                  <div class="row">
+                    <div class="my-5 col-6">
+                      <label for="city" style="color: #666"
+                        >Where are you from?</label
                       >
-                        {{ network.name }}
-                      </option>
-                    </select>
+                      <input
+                        v-model="from.city"
+                        type="text"
+                        class="form-control"
+                        id="city"
+                        placeholder="Brusque - SC"
+                      />
+                    </div>
+                    <div class="my-5 col-6">
+                      <label for="country" style="color: #666">Country</label>
+                      <input
+                        v-model="from.country"
+                        type="text"
+                        class="form-control"
+                        id="country"
+                        placeholder="Brazil"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="modal-footer">
                   <button
                     type="button"
                     class="btn btn-secondary"
-                    @click="(showModal = false), (typeSN = -1)"
+                    @click="showModal = false"
                   >
                     Close
                   </button>
                   <button
-                    v-if="btn == 'save'"
                     type="button"
-                    class="btn btn-primary"
-                    @click="addSocialNetwork(typeSN)"
+                    class="btn btn-success"
+                    @click="addFrom()"
                   >
-                    Save changes
-                  </button>
-
-                  <button
-                    v-if="btn == 'update'"
-                    type="button"
-                    class="btn btn-warning"
-                    @click="updateSocialNetwork(typeSN)"
-                  >
-                    Update changes
+                    Save
                   </button>
                 </div>
               </div>
@@ -515,7 +513,10 @@ export default {
     link_sn: "",
     btn: "",
     id_sn: "",
-    from: "",
+    from: {
+      city: "",
+      country: ""
+    },
     typeModal: "",
   }),
 
@@ -557,6 +558,19 @@ export default {
     async friends(id) {
       var follow = await api.get(`user/following.php?id=${id}`);
       this.follow = follow.data;
+    },
+
+    async addFrom() {
+      const from = await api.post(`address/store.php`, {
+        city: this.from.city,
+        country: this.from.country,
+      });
+
+      if(from){
+        localStorage.setItem("from", JSON.stringify({city:this.from.city,country:this.from.country}));
+      }
+
+      this.showModal = false;
     },
 
     async addSocialNetwork(value) {
@@ -636,6 +650,19 @@ export default {
       }
     },
 
+    async deleteFrom(id) {
+      var resposta = confirm("Deseja excluir sua origem?");
+      if (resposta == true) {
+        const from = await api.post(`address/store.php`, {
+        city: null,
+        country: null,
+      });
+        localStorage.setItem("from", JSON.stringify({city:null,country:null}));
+        this.from.city = null;
+        this.from.country = null;
+      }
+    },
+
     async updateModal(id) {
       const { data } = await api.get(`social-network/show.php?id=${id}`);
 
@@ -671,7 +698,8 @@ export default {
     if (from.city != null && from.country != null) {
       this.from = from;
     } else {
-      this.from = null;
+      this.from.city = null;
+      this.from.country = null;
     }
 
     this.getSocialNetworks();

@@ -17,10 +17,11 @@ if (!$userVerified = $auth->verifyAuth($token)) {
     die();
 }
 
-// $addressVO = new AddressVO;
+$addressVO = new AddressVO;
+
 if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerified->id_enterprise != null) {
     if ($array = json_decode(file_get_contents("php://input"), true)) :
-        $addressVO = new AddressVO;
+        
         $addressVO->setStreet($array['street']);
         $addressVO->setNumber($array['number']);
         $addressVO->setComplement($array['complement']);
@@ -29,6 +30,14 @@ if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerif
         $addressVO->setState($array['state']);
         $addressVO->setCountry($array['country']);
         $addressVO->setZipcode($array['zipcode']);
+
+        if ($array['street'] == null && $array['district'] == null && $array['zipcode'] == null && $array['state'] == null) {
+            UserDAO::addLocation($addressVO, $userVerified->id, $conn);
+            header('HTTP/1.1 200 created');
+            ob_clean();
+            echo json_encode(['success' => true, 'msg' => 'Address added']);
+            die();
+        }
 
         AddressDAO::saveAddress($addressVO, $conn, $userVerified->id_enterprise);
 
@@ -41,7 +50,7 @@ if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerif
     endif;
 } else {
     if ($array = json_decode(file_get_contents("php://input"), true)) :
-        $addressVO = new AddressVO;
+
         $addressVO->setCity($array['city']);
         $addressVO->setCountry($array['country']);
 
@@ -49,7 +58,7 @@ if ($userVerified->id && ($userVerified->businessman == true || 1) && $userVerif
 
         header('HTTP/1.1 200 created');
         ob_clean();
-        echo json_encode(['success'=>true, 'msg'=>'Address added']);
+        echo json_encode(['success' => true, 'msg' => 'Address added']);
 
     endif;
 }
