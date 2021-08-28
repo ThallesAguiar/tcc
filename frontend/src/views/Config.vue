@@ -281,14 +281,6 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="inputUnit">Allow whatsapp viewing</label>
-        <select id="inputUnit" class="form-control" v-model="whats">
-          <option value="no" selected>Não</option>
-          <option value="yes">Sim</option>
-        </select>
-      </div>
-
       <button type="button" class="btn btn-primary" @click="updateConfigMap()">
         Atualizar
       </button>
@@ -560,7 +552,7 @@ export default {
           `history/show.php?id=${this.user.id_user}`
         );
 
-        if (history.data.history.id_history) {
+        if (history.data.history != null) {
           await api.put("history/update.php", {
             id_user: this.user.id_user,
             description: this.userHistory,

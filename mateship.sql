@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `enterprise` (
   PRIMARY KEY (`id_enterprise`),
   UNIQUE KEY `numero_PJ` (`numbering_company`),
   UNIQUE KEY `numero_PF` (`numbering_personal`),
-  CONSTRAINT `fk_endereco` FOREIGN KEY (`id_endereco`) REFERENCES `address` (`id_endereco`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_address` FOREIGN KEY (`id_address`) REFERENCES `address` (`id_address`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- Copiando dados para a tabela mateship.enterprise: ~0 rows (aproximadamente)

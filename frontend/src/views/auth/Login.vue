@@ -2,8 +2,8 @@
   <body>
     <div class="container">
       <div class="row d-flex align-items-center justify-content-center">
-        <div class="col-sm-12">
-          <form v-if="isLogin" style="height:100vh">
+        <div v-if="isLogin" class="col-sm-12 col-md-6" style="height:100vh;">
+          <form class="mt-5">
             <p
               class="text-center text-white font-weight-bold"
               style="font-size: 21px; text-shadow: 0px 0px 10px teal"
@@ -56,8 +56,10 @@
               </div>
             </div>
           </form>
+        </div>
 
-          <form v-else enctype="multipart/form-data">
+        <div v-else class="col-sm-12 col-md-6">
+          <form enctype="multipart/form-data" class="mt-5">
             <p
               class="text-center text-white font-weight-bold"
               style="font-size: 21px; text-shadow: 0px 0px 10px teal"
@@ -338,9 +340,16 @@ export default {
           }
         );
 
+        localStorage.setItem("login", true);
         localStorage.setItem("token", user.data.token);
         localStorage.setItem("user", JSON.stringify(user.data.user));
-        localStorage.setItem("from", JSON.stringify({city:user.data.user.city,country:user.data.user.country,}));
+        localStorage.setItem(
+          "from",
+          JSON.stringify({
+            city: user.data.user.city,
+            country: user.data.user.country,
+          })
+        );
 
         const history = await axios.get(
           `http://localhost/mateship/backend/controller/history/show.php?id=${user.data.user.id_user}`
@@ -421,13 +430,14 @@ export default {
     },
   },
 
-  created(){
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('from');
-    localStorage.removeItem('history');
-    localStorage.removeItem('enterprise');
-  }
+  created() {
+    localStorage.setItem("login", false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("from");
+    localStorage.removeItem("history");
+    localStorage.removeItem("enterprise");
+  },
 };
 </script>
 

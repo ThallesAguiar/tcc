@@ -22,14 +22,14 @@
 
               <div class="space space-4"></div>
 
-              <router-link
-                to="/"
+              <button
                 class="btn btn-sm btn-secondary my-2 mx-2"
                 type="button"
+                @click="logout()"
               >
                 <i class="ace-icon fa fa-sign-out-alt bigger-120"></i>
                 <span class="bigger-110"> Logout </span>
-              </router-link>
+              </button>
 
               <router-link
                 to="/config"
@@ -39,6 +39,50 @@
                 <i class="ace-icon fa fa-cog bigger-120"></i>
                 <span class="bigger-110"> Update </span>
               </router-link>
+
+              <div class="space-20"></div>
+
+              <div class="row">
+                <div class="col-xs-12 col-sm">
+                  <div class="widget-box transparent">
+                    <div class="widget-header widget-header-small">
+                      <h4 class="widget-title smaller">
+                        <i class="ace-icon fa fa-check-square-o bigger-110"></i>
+                        Little About Me
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p>
+                          {{ user.bio }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="history" class="row">
+                <div class="col-xs-12 col-sm">
+                  <div class="widget-box transparent">
+                    <div class="widget-header widget-header-small">
+                      <h4 class="widget-title smaller">
+                        <i class="ace-icon fa fa-check-square-o bigger-110"></i>
+                        History
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p>
+                          {{ history }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <!-- /.col -->
 
@@ -59,7 +103,10 @@
                 <div class="profile-info-row">
                   <div class="profile-info-name">
                     From
-                    <div v-if="from.city != null && from.country != null" class="profile-info-name">
+                    <div
+                      v-if="from.city != null && from.country != null"
+                      class="profile-info-name"
+                    >
                       <button
                         class="p-1 ml-1 btn btn-warning btn-sm"
                         @click="updateModal(), (typeModal = 'from')"
@@ -76,10 +123,7 @@
                     <div v-else class="profile-info-name">
                       <button
                         type="button"
-                        @click="
-                          (showModal = true),
-                            (typeModal = 'from')
-                        "
+                        @click="(showModal = true), (typeModal = 'from')"
                         class="btn btn-success btn-sm"
                       >
                         <i class="fa fa-plus"></i>
@@ -87,20 +131,23 @@
                     </div>
                   </div>
 
-                  <div v-if="from.city != null && from.country != null" class="profile-info-value">
+                  <div
+                    v-if="from.city != null && from.country != null"
+                    class="profile-info-value"
+                  >
                     <i class="fa fa-map-marker light-orange bigger-110"></i>
                     <span>{{ from.city }}</span>
                     <span>{{ from.country }}</span>
                   </div>
                 </div>
 
-                <div class="profile-info-row">
+                <!-- <div class="profile-info-row">
                   <div class="profile-info-name">Age</div>
 
                   <div class="profile-info-value">
                     <span>{{ age }}</span>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- <div class="profile-info-row">
                   <div class="profile-info-name">Joined</div>
@@ -197,50 +244,6 @@
             <!-- /.col -->
           </div>
           <!-- /.row -->
-
-          <div class="space-20"></div>
-
-          <div class="row">
-            <div class="col-xs-12 col-sm-6">
-              <div class="widget-box transparent">
-                <div class="widget-header widget-header-small">
-                  <h4 class="widget-title smaller">
-                    <i class="ace-icon fa fa-check-square-o bigger-110"></i>
-                    Little About Me
-                  </h4>
-                </div>
-
-                <div class="widget-body">
-                  <div class="widget-main">
-                    <p>
-                      {{ user.bio }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="history" class="row">
-            <div class="col-xs-12 col-sm-6">
-              <div class="widget-box transparent">
-                <div class="widget-header widget-header-small">
-                  <h4 class="widget-title smaller">
-                    <i class="ace-icon fa fa-check-square-o bigger-110"></i>
-                    History
-                  </h4>
-                </div>
-
-                <div class="widget-body">
-                  <div class="widget-main">
-                    <p>
-                      {{ history }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <!-- /#home -->
       </div>
@@ -515,7 +518,7 @@ export default {
     id_sn: "",
     from: {
       city: "",
-      country: ""
+      country: "",
     },
     typeModal: "",
   }),
@@ -554,6 +557,16 @@ export default {
   },
 
   methods: {
+    logout() {
+      localStorage.setItem("login", false);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("from");
+      localStorage.removeItem("history");
+      localStorage.removeItem("enterprise");
+      this.$router.push("/");
+    },
+    
     // Verifica se você segue esse usuário
     async friends(id) {
       var follow = await api.get(`user/following.php?id=${id}`);
@@ -566,8 +579,11 @@ export default {
         country: this.from.country,
       });
 
-      if(from){
-        localStorage.setItem("from", JSON.stringify({city:this.from.city,country:this.from.country}));
+      if (from) {
+        localStorage.setItem(
+          "from",
+          JSON.stringify({ city: this.from.city, country: this.from.country })
+        );
       }
 
       this.showModal = false;
@@ -575,9 +591,8 @@ export default {
 
     async addSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${
-          this.dialCode + this.link_sn
-        }`;
+        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
+          this.link_sn}`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -603,9 +618,8 @@ export default {
 
     async updateSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${
-          this.dialCode + this.link_sn
-        }`;
+        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
+          this.link_sn}`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -654,10 +668,13 @@ export default {
       var resposta = confirm("Deseja excluir sua origem?");
       if (resposta == true) {
         const from = await api.post(`address/store.php`, {
-        city: null,
-        country: null,
-      });
-        localStorage.setItem("from", JSON.stringify({city:null,country:null}));
+          city: null,
+          country: null,
+        });
+        localStorage.setItem(
+          "from",
+          JSON.stringify({ city: null, country: null })
+        );
         this.from.city = null;
         this.from.country = null;
       }

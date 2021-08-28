@@ -6,6 +6,24 @@
         <div id="home" class="tab-pane in active">
           <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-6 center">
+              <h4 class="blue">
+                <span class="middle">{{ nameComplete }}</span>
+
+                <span
+                  v-if="online.online == true"
+                  class="label label-purple arrowed-in-right"
+                >
+                  <i
+                    class="ace-icon fa fa-circle smaller-80 align-middle"
+                    style="color: #90ee90"
+                  ></i>
+                  online
+                </span>
+                <span v-else class="label label-purple arrowed-in-right">
+                  <i class="ace-icon fa fa-circle smaller-80 align-middle"></i>
+                  offline
+                </span>
+              </h4>
               <span class="profile-picture">
                 <img
                   :src="user.avatar"
@@ -40,29 +58,54 @@
                 <i class="ace-icon fa fa-heart bigger-120"></i>
                 <span class="bigger-110"> Following</span>
               </button>
+
+              <div class="space-20"></div>
+
+              <div class="row">
+                <div class="col-xs-12 col-sm">
+                  <div class="widget-box transparent">
+                    <div class="widget-header widget-header-small">
+                      <h4 class="widget-title smaller">
+                        <i class="ace-icon fa fa-check-square-o bigger-110"></i>
+                        Little About Me
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p>
+                          {{ user.bio }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="history" class="row">
+                <div class="col-xs-12 col-sm">
+                  <div class="widget-box transparent">
+                    <div class="widget-header widget-header-small">
+                      <h4 class="widget-title smaller">
+                        <i class="ace-icon fa fa-check-square-o bigger-110"></i>
+                        History
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p>
+                          {{ history.description }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <!-- /.col -->
 
             <div class="col-xs-12 col-sm-12 col-md-6">
-              <h4 class="blue">
-                <span class="middle">{{ nameComplete }}</span>
-
-                <span
-                  v-if="online.online == true"
-                  class="label label-purple arrowed-in-right"
-                >
-                  <i
-                    class="ace-icon fa fa-circle smaller-80 align-middle"
-                    style="color: #90ee90"
-                  ></i>
-                  online
-                </span>
-                <span v-else class="label label-purple arrowed-in-right">
-                  <i class="ace-icon fa fa-circle smaller-80 align-middle"></i>
-                  offline
-                </span>
-              </h4>
-
               <div class="profile-user-info">
                 <div class="profile-info-row">
                   <div class="profile-info-name">Username</div>
@@ -72,15 +115,18 @@
                   </div>
                 </div>
 
-                <!-- <div class="profile-info-row">
-                  <div class="profile-info-name">Location</div>
+                <div
+                  v-if="from.city != '' && from.country != ''"
+                  class="profile-info-row"
+                >
+                  <div class="profile-info-name">From</div>
 
                   <div class="profile-info-value">
                     <i class="fa fa-map-marker light-orange bigger-110"></i>
-                    <span>Netherlands</span>
-                    <span>Amsterdam</span>
+                    <span>{{ from.city }}</span>
+                    <span>{{ from.country }}</span>
                   </div>
-                </div> -->
+                </div>
 
                 <div class="profile-info-row">
                   <div class="profile-info-name">Age</div>
@@ -107,6 +153,51 @@
                 </div>
               </div>
 
+              <div v-if="enterprise != null">
+                <hr />
+                <div class="profile-user-info">
+                  <div class="profile-info-row">
+                    <div class="profile-info-name">Enterprise</div>
+                    <ul
+                      class="profile-info-value text-justify"
+                      style="list-style:none;"
+                    >
+                      <li><b>Name: </b> {{ enterprise.fantasy_name }}</li>
+                      <li v-if="user.phone">
+                        <b>Phone: </b> {{ user.phone }}
+                        <a
+                          class="btn btn-info btn-sm"
+                          :href="'tel:' + user.phone"
+                          ><i class="fas fa-phone-alt"></i> call</a
+                        >
+                      </li>
+                      <li><b>Description: </b> {{ enterprise.description }}</li>
+                      <li><b>Sell for:</b> {{ enterprise.enterprise_type }}</li>
+                    </ul>
+                  </div>
+
+                  <div v-if="address != null">
+                    <div class="profile-info-name">
+                      Address
+                    </div>
+                    <ul
+                      class="profile-info-value text-justify"
+                      style="list-style:none;"
+                    >
+                      <li><b>Address: </b> {{ address.street }}</li>
+                      <li><b>Number: </b> {{ address.number }}</li>
+                      <li v-if="address.complement != ''">
+                        <b>Complement: </b> {{ address.complement }}
+                      </li>
+                      <li><b>District:</b> {{ address.district }}</li>
+                      <li><b>City:</b> {{ address.city }}</li>
+                      <li><b>State:</b> {{ address.state }}</li>
+                      <li><b>Country:</b> {{ address.country }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <hr />
               <div v-if="social_networks">
                 <div class="hr hr-8 dotted font-weight-bold">Find me in</div>
 
@@ -116,8 +207,9 @@
                   class="profile-user-info"
                 >
                   <div class="profile-info-row">
-                    <!-- <div class="profile-info-name">{{ sn.name }}</div> -->
-
+                    <!-- <div class="profile-info-name">
+                      <i :class="sn.icon" aria-hidden="true"></i>
+                    </div> -->
                     <div class="profile-info-value">
                       <a :href="sn.link" target="_blank">{{ sn.name }}</a>
                     </div>
@@ -128,50 +220,6 @@
             <!-- /.col -->
           </div>
           <!-- /.row -->
-
-          <div class="space-20"></div>
-
-          <div class="row">
-            <div class="col-xs-12 col-sm-6">
-              <div class="widget-box transparent">
-                <div class="widget-header widget-header-small">
-                  <h4 class="widget-title smaller">
-                    <i class="ace-icon fa fa-check-square-o bigger-110"></i>
-                    Little About Me
-                  </h4>
-                </div>
-
-                <div class="widget-body">
-                  <div class="widget-main">
-                    <p>
-                      {{ user.bio }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="history" class="row">
-            <div class="col-xs-12 col-sm-6">
-              <div class="widget-box transparent">
-                <div class="widget-header widget-header-small">
-                  <h4 class="widget-title smaller">
-                    <i class="ace-icon fa fa-check-square-o bigger-110"></i>
-                    History
-                  </h4>
-                </div>
-
-                <div class="widget-body">
-                  <div class="widget-main">
-                    <p>
-                      {{ history.description }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <!-- /#home -->
       </div>
@@ -188,6 +236,12 @@ export default {
     history: "",
     social_networks: "",
     follow: false,
+    from: {
+      city: "",
+      country: "",
+    },
+    address: null,
+    enterprise: null,
   }),
 
   computed: {
@@ -258,7 +312,26 @@ export default {
     const history = await api.get(`history/show.php?id=${id}`);
     const social_networks = await api.get(`social-network/index.php?id=${id}`);
 
+    if (user.data.user.businessman == 1 && user.data.user.id_enterprise != "") {
+      const enterprise = await api.get(
+        `enterprise/show.php?id=${user.data.user.id_enterprise}`
+      );
+      this.enterprise = enterprise.data;
+
+      if (
+        enterprise.data.id_address != "" &&
+        enterprise.data.id_address != null
+      ) {
+        const address = await api.get(
+          `address/show.php?id=${enterprise.data.id_address}`
+        );
+        this.address = address.data;
+      }
+    }
+
     this.user = user.data.user;
+    this.from.city = user.data.user.city;
+    this.from.country = user.data.user.country;
     this.history = history.data.history;
     this.social_networks = social_networks.data;
 

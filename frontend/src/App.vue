@@ -10,13 +10,17 @@
 import api from "./service/api";
 export default {
   created() {
-    setInterval(async function () {
-      const { id_user } = localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user"))
-        : "";
-      await api.put(`session/update.php?id=${id_user}`);
-      console.log("ta on");
-    }, 100000);
+    const login = localStorage.getItem("login");
+    // console.log(login)
+
+    if(login == 'true'){
+      setInterval(async function () {
+        const { id_user } = JSON.parse(localStorage.getItem("user"));
+        // console.log(id_user)
+        await api.put(`session/update.php?id=${id_user}`);
+        console.log('Voce esta logado')
+      }, 100000);
+    }
   },
 };
 </script>
