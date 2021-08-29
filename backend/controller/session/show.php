@@ -23,7 +23,7 @@ $login = SessionDAO::verifyStatusOnline($id_user, $conn);
 
 date_default_timezone_set('America/Sao_Paulo');
 $data['atual'] = date('Y-m-d H:i:s');
-$data['online'] = strtotime($data['atual'] . "-1 minutes");
+$data['online'] = strtotime($data['atual'] . "-5 minutes");
 $data['online'] = date('Y-m-d H:i:s', $data['online']);
 
 

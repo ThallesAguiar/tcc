@@ -287,9 +287,10 @@ export default {
   },
 
   methods: {
-    async getStatusOnline() {
-      var { data } = await api.get(`session/show.php?id=${this.user.id_user}`);
-      this.online = data;
+    async getStatusOnline(id) {
+      var { data } = await api.get(`session/show.php?id=${id}`);
+      console.log(data)
+      this.online = data;      
     },
 
     // Seguir/Desseguir usuário
@@ -339,13 +340,16 @@ export default {
       this.social_networks = false;
     }
 
+    var { data } = await api.get(`session/show.php?id=${id}`);    
+    this.online = data;
+
     this.following(id);
 
-    this.getStatusOnline();
+    this.getStatusOnline(id);
 
     setInterval(() => {
-      this.getStatusOnline();
-    }, 100000);
+      this.getStatusOnline(id);
+    }, 300000);
   },
 };
 </script>

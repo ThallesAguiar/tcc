@@ -46,7 +46,7 @@
     </transition>
     <button
       type="button"
-      style="z-index: 7; width: 50px; position: absolute; top: 15%; right: 5px"
+      style="z-index: 7; width: 50px; position: absolute; top: 150px; right: 5px"
       class="btn btn-light"
       @click="activeSearchUsers()"
     >
@@ -58,8 +58,8 @@
       :accessToken="accessToken"
       :mapStyle="mapStyle"
       :center="myCoordinates"
+      hash
     >
-      <!-- hash -->
       <MglGeolocateControl
         position="top-right"
         :trackUserLocation="true"
@@ -153,42 +153,44 @@ export default {
   },
 
   methods: {
-    getCoordinatesCurrent() {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-
-          const coord = Object.values({ longitude, latitude });
-
-          if (!localStorage.getItem("coordinates"))
-            localStorage.setItem("coordinates", JSON.stringify(coord));
-          // console.log(coord);
-          this.myCoordinates = coord;
-        },
-        (err) => {
-          console.log(err);
-        },
-        {
-          timeout: 30000,
-          enableHighAccuracy: true, //pega a localização via GPS
-          maximumAge: 1000, //como se fosse um cache, pra guardar a localização do GPS
-        }
-      );
-    },
     async updateCoordinatesUser(id) {
-      this.getCoordinatesCurrent();
+      setInterval(async function() {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
 
-      try {
-        const coordsCurrent = await api.put(`coordinates/update.php`, {
-          id_user: id,
-          lat: this.myCoordinates[1],
-          lng: this.myCoordinates[0],
-        });
-      } catch (error) {}
+            const coord = Object.values({ longitude, latitude });
+
+            // if (!localStorage.getItem("coordinates"))
+            localStorage.setItem("coordinates", JSON.stringify(coord));
+            // console.log(coord);
+            this.myCoordinates = coord;
+            console.log(this.myCoordinates);
+          },
+          (err) => {
+            console.log(err);
+          },
+          {
+            timeout: 100000,
+            enableHighAccuracy: true, //pega a localização via GPS
+            maximumAge: 1000, //como se fosse um cache, pra guardar a localização do GPS
+          }
+        );
+
+        try {
+          const coordsCurrent = await api.put(`coordinates/update.php`, {
+            id_user: id,
+            lat: this.myCoordinates[1],
+            lng: this.myCoordinates[0],
+          });
+
+          // console.log(coordsCurrent.data);
+        } catch (error) {}
+      }, 300000);
     },
 
     visitProfile(id) {
-      this.$router.push(`/friend/${id}`)
+      this.$router.push(`/friend/${id}`);
     },
 
     async searchUsers() {
@@ -207,7 +209,7 @@ export default {
         const usersForRange = await api.get(
           `search/index.php?id=${id_user}&lat=${lat}&lng=${lng}&range=${range}&unit=${unit}`
         );
-        console.log(usersForRange);
+        // console.log(usersForRange);
         this.markers = usersForRange.data.markers;
         this.unit = usersForRange.data.unit;
         this.range = usersForRange.data.range;
@@ -215,9 +217,9 @@ export default {
         console.log(error);
       }
 
-      setTimeout(() => {
-        this.loading = false;
-      }, 2000);
+      // setTimeout(() => {
+      this.loading = false;
+      // }, 2000);
     },
 
     activeSearchUsers() {
@@ -248,27 +250,23 @@ export default {
 
     this.updateCoordinatesUser(this.user.id_user);
 
-    setInterval(function () {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
+    // coordenadas
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
 
-          const coord = Object.values({ longitude, latitude });
+        const coord = Object.values({ longitude, latitude });
 
-          if (!localStorage.getItem("coordinates"))
-            localStorage.setItem("coordinates", JSON.stringify(coord));
-          this.myCoordinates = coord;
-        },
-        (err) => {
-          console.log(err);
-        },
-        {
-          timeout: 30000,
-          enableHighAccuracy: true, //pega a localização via GPS
-          maximumAge: 1000, //como se fosse um cache, pra guardar a localização do GPS
-        }
-      );
-    }, 300000);
+        localStorage.setItem("coordinates", JSON.stringify(coord));
+      },
+      (err) => {
+        console.log(err);
+      },
+      {
+        enableHighAccuracy: true, //pega a localização via GPS
+        maximumAge: 1000, //como se fosse um cache, pra guardar a localização do GPS
+      }
+    ); //. coordenadas
   },
 };
 </script>
