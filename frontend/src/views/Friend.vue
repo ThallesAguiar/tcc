@@ -349,7 +349,7 @@ export default {
 
     setInterval(() => {
       this.getStatusOnline(id);
-    }, 300000);
+    }, 100000);
   },
 };
 </script>

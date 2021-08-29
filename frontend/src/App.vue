@@ -19,7 +19,7 @@ export default {
         // console.log(id_user)
         await api.put(`session/update.php?id=${id_user}`);
         console.log('Voce esta logado')
-      }, 500000);
+      }, 100000);
     }
   },
 };
