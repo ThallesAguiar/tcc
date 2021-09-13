@@ -218,10 +218,11 @@ class UserDAO
             die();
         }
     }
+
     /**
      * Mostra se você segue o usuário selecionado.
      */
-    public static function following($id_user, $like, $conn)
+    public static function follow($id_user, $like, $conn)
     {
         $sql = "SELECT * FROM `following` WHERE `id_user`='$id_user' AND `like`= '$like'";
         $query = mysqli_query($conn, $sql);
@@ -238,6 +239,73 @@ class UserDAO
         }
 
         return true;
+    }
+
+    /**
+     * Mostra os seguidores de um usuário
+     */
+    public static function followers($id_user, $conn)
+    {
+        $usersArray = array();
+
+        $sql = "SELECT id_user FROM `following` WHERE `like`= '$id_user'";
+        $query = mysqli_query($conn, $sql);
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+
+        if (mysqli_num_rows($query) <= 0) {
+            return false;
+        }
+
+        while ($users = mysqli_fetch_array($query, true)) {
+
+            $sql2 = "SELECT id_user, concat(name, ' ', lastname) as nameComplete, avatar FROM user WHERE id_user = ".$users['id_user']."";
+            $query2 = mysqli_query($conn, $sql2);
+
+            
+            $usersArray[] = mysqli_fetch_assoc($query2);
+        }
+
+        return $usersArray;
+    }
+
+    /**
+     * Mostra quem o usuário segue
+     */
+    public static function following($id_user, $conn)
+    {
+        $usersArray = array();
+
+        $sql = "SELECT `like` FROM `following` WHERE `id_user`= '$id_user'";
+        $query = mysqli_query($conn, $sql);
+        
+
+        if (mysqli_error($conn)) {
+            header('HTTP/1.1 400 error in DB');
+            ob_clean();
+            echo json_encode(["error" => true, "msg" => mysqli_error($conn)]);
+            die();
+        }
+
+        if (mysqli_num_rows($query) <= 0) {
+            return false;
+        }
+
+        while ($users = mysqli_fetch_array($query, true)) {
+            
+            $sql2 = "SELECT id_user, concat(name, ' ', lastname) as nameComplete, avatar FROM user WHERE id_user = ".$users['like']."";
+            $query2 = mysqli_query($conn, $sql2);
+            
+            
+            $usersArray[] = mysqli_fetch_assoc($query2);
+        }
+
+        return $usersArray;
     }
 
     /**

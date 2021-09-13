@@ -17,10 +17,18 @@ if (!$userVerified = $auth->verifyAuth($token)) {
     die();
 }
 
-$id = $_GET['id'];
+// $id = $_GET['id'];
+// $users = UserDAO::following($id, $conn);
 
-$user = UserDAO::following($userVerified->id, $id, $conn);
+$users = UserDAO::following($userVerified->id, $conn);
+
+if ($users == false) {
+    header('HTTP/1.1 200 OK');
+    ob_clean();
+    echo json_encode(['vazio' => true, 'msg' => 'Você ainda não possui seguidores.']);
+    die();
+}
 
 header('HTTP/1.1 200 OK');
 ob_clean();
-echo json_encode($user);
+echo json_encode($users,JSON_UNESCAPED_SLASHES);
