@@ -1,11 +1,15 @@
 <template>
   <!-- https://www.bootdey.com/snippets/view/User-Profile-with-tabs -->
-  <div id="user-profile-2" class="container-fluid user-profile pt-2">
+  <div
+    id="user-profile-2"
+    class="container user-profile mt-2 bg-white"
+    style="box-shadow: 0px 2px 15px 2px rgba(0, 0, 0, 0.2)"
+  >
     <div class="tabbable">
       <div class="tab-content no-border padding-24">
         <div id="home" class="tab-pane in active">
           <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 center">
+            <div class="col-xs-12 col-sm-12 col-md-6 center mt-2">
               <span class="profile-picture">
                 <img
                   :src="user.avatar"
@@ -41,6 +45,49 @@
               </router-link>
 
               <div class="space-20"></div>
+
+              <h4 class="blue">
+                <span class="middle">{{ nameComplete }}</span>
+              </h4>
+              <div class="row">
+                <div v-if="from.city && from.country" class="col">
+                  <div class="h6">
+                    From
+                    <button
+                      class="p-1 ml-1 btn btn-warning btn-sm"
+                      @click="updateModal(), (typeModal = 'from')"
+                    >
+                      <i class="fa fa-edit"></i>
+                    </button>
+                    <button
+                      class="p-1 ml-1 btn btn-danger btn-sm"
+                      @click="deleteFrom()"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+
+                  <p class="text-center">
+                    <i class="fa fa-map-marker light-orange bigger-110"></i>
+                    <span>{{ from.city }}</span>
+                    <span> - </span>
+                    <span>{{ from.country }}</span>
+                  </p>
+                </div>
+                <div v-else class="col">
+                  <div class="h6">
+                    From
+                    <button
+                      type="button"
+                      @click="(showModal = true), (typeModal = 'from')"
+                      class="btn btn-success btn-sm"
+                    >
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <br />
 
               <div class="row">
                 <div class="col-xs-12 col-sm">
@@ -87,77 +134,6 @@
             <!-- /.col -->
 
             <div class="col-xs-12 col-sm-12 col-md-6">
-              <h4 class="blue">
-                <span class="middle">{{ nameComplete }}</span>
-              </h4>
-
-              <div class="profile-user-info">
-                <!-- <div class="profile-info-row">
-                  <div class="profile-info-name">Username</div>
-
-                  <div class="profile-info-value">
-                    <span>{{ nameComplete }}</span>
-                  </div>
-                </div> -->
-
-                <div class="profile-info-row">
-                  <div class="profile-info-name">
-                    From
-                    <div
-                      v-if="from.city != null && from.country != null"
-                      class="profile-info-name"
-                    >
-                      <button
-                        class="p-1 ml-1 btn btn-warning btn-sm"
-                        @click="updateModal(), (typeModal = 'from')"
-                      >
-                        <i class="fa fa-edit"></i>
-                      </button>
-                      <button
-                        class="p-1 ml-1 btn btn-danger btn-sm"
-                        @click="deleteFrom()"
-                      >
-                        <i class="fa fa-trash"></i>
-                      </button>
-                    </div>
-                    <div v-else class="profile-info-name">
-                      <button
-                        type="button"
-                        @click="(showModal = true), (typeModal = 'from')"
-                        class="btn btn-success btn-sm"
-                      >
-                        <i class="fa fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    v-if="from.city != null && from.country != null"
-                    class="profile-info-value"
-                  >
-                    <i class="fa fa-map-marker light-orange bigger-110"></i>
-                    <span>{{ from.city }}</span>
-                    <span>{{ from.country }}</span>
-                  </div>
-                </div>
-
-                <!-- <div class="profile-info-row">
-                  <div class="profile-info-name">Age</div>
-
-                  <div class="profile-info-value">
-                    <span>{{ age }}</span>
-                  </div>
-                </div> -->
-
-                <!-- <div class="profile-info-row">
-                  <div class="profile-info-name">Joined</div>
-
-                  <div class="profile-info-value">
-                    <span>{{ joined }}</span>
-                  </div>
-                </div> -->
-              </div>
-
               <div class="my-5">
                 <div v-if="social_networks">
                   <div class="hr hr-8 dotted font-weight-bold">Find me in</div>
@@ -167,10 +143,10 @@
                     :key="sn.id_social_network"
                     class="profile-user-info"
                   >
-                    <div class="profile-info-row">
-                      <div class="profile-info-name">
+                    <div class="row">
+                      <div class="col-4">
                         <button
-                          class="p-1 ml-1 btn btn-warning btn-sm"
+                          class="ml-1 btn btn-warning btn-sm"
                           @click="
                             updateModal(sn.id_social_network),
                               (typeModal = 'SN'),
@@ -180,7 +156,7 @@
                           <i class="fa fa-edit"></i>
                         </button>
                         <button
-                          class="p-1 ml-1 btn btn-danger btn-sm"
+                          class="ml-1 btn btn-danger btn-sm"
                           @click="
                             deleteSocialNetwork(sn.id_social_network, sn.name)
                           "
@@ -188,16 +164,15 @@
                           <i class="fa fa-trash"></i>
                         </button>
                       </div>
-
-                      <div class="profile-info-value">
+                      <div class="col-8 text-left">
                         <i :class="sn.icon"></i>
                         <a :href="sn.link" target="_blank">{{ sn.name }} </a>
                       </div>
+                      <div class="col p-1"></div>
                     </div>
                   </div>
 
                   <div class="profile-info-name">
-                    Add
                     <button
                       type="button"
                       @click="
@@ -205,12 +180,12 @@
                       "
                       class="btn btn-success btn-sm"
                     >
-                      <i class="fa fa-plus"></i>
+                      <i class="fa fa-plus"></i> Add social network
                     </button>
                   </div>
-
                   <div class="profile-info-value">...</div>
                 </div>
+
                 <div v-else>
                   <div class="hr hr-8 dotted font-weight-bold">
                     Adicione as suas redes sociais
@@ -238,7 +213,53 @@
                   </div>
                 </div>
 
-                <div class="container mt-5">your friends</div>
+                <div class="container mt-5">
+                  your friends
+
+                  <div id="friends">
+                    <div class="profile-users">
+
+                      <div class="memberdiv">
+                        <div class="user">
+                          <a href="#">
+                            <img
+                              src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                              alt="Alex Doe's avatar"
+                            />
+                          </a>
+                          <div class="body">
+                            <div class="name">
+                              <a href="#">
+                                <!-- <span class="user-status status-idle"></span> -->
+                                Alex Doe
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="memberdiv">
+                        <div class="user">
+                          <a href="#">
+                            <img
+                              src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                              alt="Alex Doe's avatar"
+                            />
+                          </a>
+                          <div class="body">
+                            <div class="name">
+                              <a href="#">
+                                <!-- <span class="user-status status-idle"></span> -->
+                                Alex Doe
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <!-- /.col -->
@@ -497,7 +518,8 @@ export default {
     user: {},
     history: "",
     social_networks: "",
-    follow: false,
+    followingYou: "",
+    youFollower: "",
     modal: false,
     showModal: false,
     typeSN: -1,
@@ -527,33 +549,6 @@ export default {
     nameComplete() {
       return this.user.name + " " + this.user.lastname;
     },
-
-    age() {
-      var birthday = this.user.birthday;
-
-      var currentDate = new Date();
-      var currentYear = currentDate.getFullYear();
-      var yearMounthDay = birthday.split("-");
-      var day = yearMounthDay[2];
-      var mounth = yearMounthDay[1];
-      var year = yearMounthDay[0];
-
-      var age = currentYear - year;
-      var currentMounth = currentDate.getMonth() + 1;
-      //Se mes atual for menor que o nascimento, nao fez aniversario ainda;
-      if (currentMounth < mounth) {
-        age--;
-      } else {
-        //Se estiver no mes do nascimento, verificar o dia
-        if (currentMounth == mounth) {
-          if (new Date().getDate() < day) {
-            //Se a data atual for menor que o dia de nascimento ele ainda nao fez aniversario
-            age--;
-          }
-        }
-      }
-      return age;
-    },
   },
 
   methods: {
@@ -566,11 +561,16 @@ export default {
       localStorage.removeItem("enterprise");
       this.$router.push("/");
     },
-    
+
     // Verifica se você segue esse usuário
-    async friends(id) {
-      var follow = await api.get(`user/following.php?id=${id}`);
-      this.follow = follow.data;
+    async following() {
+      var following = await api.get(`user/following.php`);
+      this.followingYou = following.data;
+    },
+
+    async follower() {
+      var follower = await api.get(`user/followers.php`);
+      this.youFollower = follower.data;
     },
 
     async addFrom() {
@@ -591,8 +591,9 @@ export default {
 
     async addSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
-          this.link_sn}`;
+        var link = `https://api.whatsapp.com/send/?phone=${
+          this.dialCode + this.link_sn
+        }`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -618,8 +619,9 @@ export default {
 
     async updateSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
-          this.link_sn}`;
+        var link = `https://api.whatsapp.com/send/?phone=${
+          this.dialCode + this.link_sn
+        }`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -721,7 +723,7 @@ export default {
 
     this.getSocialNetworks();
 
-    // this.friends(id);
+    // this.following(id);
   },
 };
 </script>
@@ -751,6 +753,7 @@ label {
 .profile-info-value {
   display: table-cell;
   border-top: 1px dotted #d5e4f1;
+  width: 100%;
 }
 
 .profile-info-name {
@@ -764,20 +767,8 @@ label {
 }
 
 .profile-info-value {
-  padding: 6px 4px 6px 6px;
-}
-
-.profile-info-value > span + span:before {
-  display: inline;
-  content: ",";
-  margin-left: 1px;
-  margin-right: 3px;
-  color: #666;
-  border-bottom: 1px solid #fff;
-}
-
-.profile-info-value > span + span.editable-container:before {
-  display: none;
+  /* padding: 6px 4px 6px 6px; */
+  padding: 6px 121px 6px 0px;
 }
 
 .profile-info-row:first-child .profile-info-name,
@@ -785,19 +776,32 @@ label {
   border-top: none;
 }
 
-.profile-user-info-striped {
-  border: 1px solid #dcebf7;
+.profile-users .user img {
+  padding: 2px;
+  border-radius: 100%;
+  border: 1px solid #aaa;
+  max-width: none;
+  width: 64px;
+  -webkit-transition: all 0.1s;
+  -o-transition: all 0.1s;
+  transition: all 0.1s;
 }
 
-.profile-user-info-striped .profile-info-name {
-  color: #336199;
-  background-color: #edf3f4;
-  border-top: 1px solid #f7fbff;
+.profile-users .user img:hover {
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.33);
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.33);
 }
 
-.profile-user-info-striped .profile-info-value {
-  border-top: 1px dotted #dcebf7;
-  padding-left: 12px;
+.profile-users .memberdiv {
+  display: inline-block;
+  /* background-color: #fff; */
+  width: 100px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: none;
+  text-align: center;
+  margin: 0 8px 24px;
 }
 
 /* MODAL */
