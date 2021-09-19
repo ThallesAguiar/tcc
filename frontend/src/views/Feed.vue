@@ -214,52 +214,102 @@
                 </div>
 
                 <div class="container mt-5">
-                  your friends
+                  <span class="h6 font-weight-bold">following ({{youFollower.total}})</span> 
 
                   <div id="friends">
                     <div class="profile-users">
-
-                      <div class="memberdiv">
-                        <div class="user">
-                          <a href="#">
-                            <img
-                              src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                              alt="Alex Doe's avatar"
-                            />
-                          </a>
-                          <div class="body">
-                            <div class="name">
-                              <a href="#">
-                                <!-- <span class="user-status status-idle"></span> -->
-                                Alex Doe
-                              </a>
+                      <div
+                        class="memberdiv"
+                        v-for="following in youFollower.users.slice(0, 6)"
+                        :key="following.id_user"
+                      >
+                        <router-link :to="'/friend/' + following.id_user">
+                          <div class="user">
+                              <img
+                                :src="following.avatar"
+                                alt="Following's avatar"
+                              />
+                            <div class="body">
+                              <div class="name">
+                                  {{ following.nameComplete }}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </router-link>
                       </div>
-
-                      <div class="memberdiv">
-                        <div class="user">
-                          <a href="#">
-                            <img
-                              src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                              alt="Alex Doe's avatar"
-                            />
-                          </a>
-                          <div class="body">
-                            <div class="name">
-                              <a href="#">
-                                <!-- <span class="user-status status-idle"></span> -->
-                                Alex Doe
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
                     </div>
+                    <router-link class="btn btn-light text-primary" to="/following"
+                      >See all</router-link
+                    >
                   </div>
                 </div>
+
+                <hr>
+
+                <div class="container mt-5">                  
+                  <span class="h6 font-weight-bold">followers ({{followingYou.total}})</span> 
+
+                  <div id="friends">
+                    <div class="profile-users">
+                      <div
+                        class="memberdiv"
+                        v-for="followers in followingYou.users.slice(0, 6)"
+                        :key="followers.id_user"
+                      >
+                        <router-link :to="'/friend/' + followers.id_user">
+                          <div class="user">
+                              <img
+                                :src="followers.avatar"
+                                alt="Follower's avatar"
+                              />
+                            <div class="body">
+                              <div class="name">
+                                  {{ followers.nameComplete }}
+                              </div>
+                            </div>
+                          </div>
+                        </router-link>
+                      </div>
+                    </div>
+                    <router-link class="btn btn-light text-primary" to="/followers"
+                      >See all</router-link
+                    >
+                  </div>
+                </div>
+
+                <!-- <hr>
+
+                <div class="container mt-5">                  
+                  <span class="h6 font-weight-bold">Events</span> 
+
+                  <div id="friends">
+                    <div class="profile-users">
+                      <div
+                        class="memberdiv"
+                        v-for="follower in followingYou.slice(0, 6)"
+                        :key="follower.id_user"
+                      >
+                        <router-link :to="'/friend/' + follower.id_user">
+                          <div class="user">
+                              <img
+                                :src="follower.avatar"
+                                alt="Follower's avatar"
+                              />
+                            <div class="body">
+                              <div class="name">
+                                  Bailão da serra - Pós pandemia
+                              </div>
+                            </div>
+                          </div>
+                        </router-link>
+                      </div>
+                    </div>
+                    <router-link class="btn btn-link" to="/followers"
+                      >See all</router-link
+                    >
+                  </div>
+                </div> -->
+
               </div>
             </div>
             <!-- /.col -->
@@ -562,15 +612,16 @@ export default {
       this.$router.push("/");
     },
 
-    // Verifica se você segue esse usuário
     async following() {
       var following = await api.get(`user/following.php`);
-      this.followingYou = following.data;
+      // console.log("following", following.data);
+      this.youFollower = following.data;
     },
 
     async follower() {
       var follower = await api.get(`user/followers.php`);
-      this.youFollower = follower.data;
+      // console.log("follower", follower.data);
+      this.followingYou = follower.data;
     },
 
     async addFrom() {
@@ -591,9 +642,8 @@ export default {
 
     async addSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${
-          this.dialCode + this.link_sn
-        }`;
+        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
+          this.link_sn}`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -619,9 +669,8 @@ export default {
 
     async updateSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${
-          this.dialCode + this.link_sn
-        }`;
+        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
+          this.link_sn}`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -723,7 +772,8 @@ export default {
 
     this.getSocialNetworks();
 
-    // this.following(id);
+    this.following();
+    this.follower();
   },
 };
 </script>
@@ -793,7 +843,7 @@ label {
 }
 
 .profile-users .memberdiv {
-  display: inline-block;
+  display: inline-flex;
   /* background-color: #fff; */
   width: 100px;
   -webkit-box-sizing: border-box;

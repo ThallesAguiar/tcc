@@ -39,6 +39,16 @@ const routes = [
         name: "Config",
         component: () => import("../views/Config.vue"),
       },
+      {
+        path: "/following",
+        name: "Following",
+        component: () => import("../views/Following.vue"),
+      },
+      {
+        path: "/followers",
+        name: "Followers",
+        component: () => import("../views/Followers.vue"),
+      },
     ],
   },
   // {

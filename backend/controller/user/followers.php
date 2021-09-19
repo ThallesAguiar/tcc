@@ -29,6 +29,8 @@ if ($users == false) {
     die();
 }
 
+$total = count($users);
+
 header('HTTP/1.1 200 OK');
 ob_clean();
-echo json_encode($users,JSON_UNESCAPED_SLASHES);
+echo json_encode(['users'=>$users,'total'=>$total],JSON_UNESCAPED_SLASHES);
