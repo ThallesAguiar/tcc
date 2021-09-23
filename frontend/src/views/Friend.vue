@@ -1,6 +1,8 @@
 <template>
   <!-- https://www.bootdey.com/snippets/view/User-Profile-with-tabs -->
-  <div id="user-profile-2" class="container user-profile pt-2" style="box-shadow: 0px 2px 15px 2px rgba(0, 0, 0, 0.2)">
+  <div id="user-profile-2" 
+  class="container user-profile mt-2 bg-white"
+    style="box-shadow: 0px 2px 15px 2px rgba(0, 0, 0, 0.2)">
     <div class="tabbable">
       <div class="tab-content no-border padding-24">
         <div id="home" class="tab-pane in active">
