@@ -19,8 +19,8 @@ if (!$userVerified = $auth->verifyAuth($token)) {
 
 $id = $_GET['id'];
 
-$user = UserDAO::dislike($userVerified->id, $id, $conn);
+$user = UserDAO::follow($userVerified->id, $id, $conn);
 
 header('HTTP/1.1 200 OK');
 ob_clean();
-echo json_encode(true);
+echo json_encode($user);

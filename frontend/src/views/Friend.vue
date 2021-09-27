@@ -46,7 +46,7 @@
                 v-if="follow == false"
                 href="#"
                 class="btn btn-sm btn-block btn-success my-2"
-                @click="follower(user.id_user)"
+                @click="likeDislike(user.id_user)"
               >
                 <i class="ace-icon fa fa-plus-circle bigger-120"></i>
                 <span class="bigger-110"> Follow as a friend</span>
@@ -55,7 +55,7 @@
               <button
                 v-else
                 class="btn btn-sm btn-block btn-primary my-2"
-                @click="follower(user.id_user)"
+                @click="likeDislike(user.id_user)"
               >
                 <i class="ace-icon fa fa-heart bigger-120"></i>
                 <span class="bigger-110"> Following</span>
@@ -237,7 +237,7 @@ export default {
     online: "",
     history: "",
     social_networks: "",
-    follow: false,
+    follow: Boolean,
     from: {
       city: "",
       country: "",
@@ -296,14 +296,14 @@ export default {
     },
 
     // Seguir/Desseguir usuário
-    async follower(id) {
+    async likeDislike(id) {
       await api.get(`user/follow.php?id=${id}`);
-      this.following(id);
+      this.getFollow(id);
     },
 
     // Verifica se você segue esse usuário
-    async following(id) {
-      var follow = await api.get(`user/following.php?id=${id}`);
+    async getFollow(id) {
+      var follow = await api.get(`user/getFollow.php?id=${id}`);
       this.follow = follow.data;
     },
   },
@@ -345,7 +345,7 @@ export default {
     var { data } = await api.get(`session/show.php?id=${id}`);    
     this.online = data;
 
-    this.following(id);
+    this.getFollow(id);
 
     this.getStatusOnline(id);
 
