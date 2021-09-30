@@ -25,7 +25,7 @@ $users = UserDAO::followers($userVerified->id, $conn);
 if ($users == false) {
     header('HTTP/1.1 200 OK');
     ob_clean();
-    echo json_encode(['vazio' => true, 'msg' => 'Você ainda não possui seguidores.']);
+    echo json_encode(['vazio' => true, 'msg' => 'You still don\'t have followers']);
     die();
 }
 
