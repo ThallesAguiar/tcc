@@ -118,7 +118,7 @@
                 </div>
 
                 <div
-                  v-if="from.city != '' && from.country != ''"
+                  v-if="from.city != null && from.country != null"
                   class="profile-info-row"
                 >
                   <div class="profile-info-name">From</div>
