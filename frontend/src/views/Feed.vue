@@ -213,8 +213,19 @@
                   </div>
                 </div>
 
-                <div class="container mt-5">
-                  <span class="h6 font-weight-bold">following ({{youFollower.total}})</span> 
+                <div v-if="youFollower.vazio" class="container mt-5">
+                  <span class="h6 font-weight-bold">following (0)</span>
+
+                  <div id="friends">
+                    <div class="profile-users">
+                              {{ youFollower.msg }}
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="container mt-5">
+                  <span class="h6 font-weight-bold"
+                    >following ({{ youFollower.total }})</span
+                  >
 
                   <div id="friends">
                     <div class="profile-users">
@@ -225,29 +236,42 @@
                       >
                         <router-link :to="'/friend/' + following.id_user">
                           <div class="user">
-                              <img
-                                :src="following.avatar"
-                                alt="Following's avatar"
-                              />
+                            <img
+                              :src="following.avatar"
+                              alt="Following's avatar"
+                            />
                             <div class="body">
                               <div class="name">
-                                  {{ following.nameComplete }}
+                                {{ following.nameComplete }}
                               </div>
                             </div>
                           </div>
                         </router-link>
                       </div>
                     </div>
-                    <router-link class="btn btn-light text-primary" to="/following"
+                    <router-link
+                      class="btn btn-light text-primary"
+                      to="/following"
                       >See all</router-link
                     >
                   </div>
                 </div>
 
-                <hr>
+                <hr />
+                <div v-if="followingYou.vazio" class="container mt-5">
+                  <span class="h6 font-weight-bold">followers (0)</span>
 
-                <div class="container mt-5">                  
-                  <span class="h6 font-weight-bold">followers ({{followingYou.total}})</span> 
+                  <div id="friends">
+                    <div class="profile-users">
+                              {{ followingYou.msg }}
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else class="container mt-5">
+                  <span class="h6 font-weight-bold"
+                    >followers ({{ followingYou.total }})</span
+                  >
 
                   <div id="friends">
                     <div class="profile-users">
@@ -258,20 +282,22 @@
                       >
                         <router-link :to="'/friend/' + followers.id_user">
                           <div class="user">
-                              <img
-                                :src="followers.avatar"
-                                alt="Follower's avatar"
-                              />
+                            <img
+                              :src="followers.avatar"
+                              alt="Follower's avatar"
+                            />
                             <div class="body">
                               <div class="name">
-                                  {{ followers.nameComplete }}
+                                {{ followers.nameComplete }}
                               </div>
                             </div>
                           </div>
                         </router-link>
                       </div>
                     </div>
-                    <router-link class="btn btn-light text-primary" to="/followers"
+                    <router-link
+                      class="btn btn-light text-primary"
+                      to="/followers"
                       >See all</router-link
                     >
                   </div>
@@ -309,7 +335,6 @@
                     >
                   </div>
                 </div> -->
-
               </div>
             </div>
             <!-- /.col -->
@@ -642,8 +667,9 @@ export default {
 
     async addSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
-          this.link_sn}`;
+        var link = `https://api.whatsapp.com/send/?phone=${
+          this.dialCode + this.link_sn
+        }`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
@@ -669,8 +695,9 @@ export default {
 
     async updateSocialNetwork(value) {
       if (value == 0) {
-        var link = `https://api.whatsapp.com/send/?phone=${this.dialCode +
-          this.link_sn}`;
+        var link = `https://api.whatsapp.com/send/?phone=${
+          this.dialCode + this.link_sn
+        }`;
       } else if (value == 1 || value == 5 || value == 6 || value == 7) {
         var link = this.link_sn;
       } else if (value == 2) {
